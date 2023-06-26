@@ -1,0 +1,83 @@
+{
+  "name": "dacqman",
+  "version": "0.0.19",
+  "description": "Data Acquisition and Management Tool (Demo/R&D) especially for OshaBlue LLC Ultrasonic NDT scanning hardware (HDL-0108-RSCPT, RS104, DL-Series)",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hdyork/Dacqman.git"
+  },
+  "build": {
+    "appId": "com.hdyork.Dacqman",
+    "directories": {
+      "output": "release-builds"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Harryd73",
+        "repo": "Dacqman"
+      }
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icons/mac/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/win/icon.ico",
+      "publish": [
+        "github"
+      ]
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/png/icon.png"
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "install-bak": "npm run -s rebuild-ftdi & npm run -s rebuild-serialport",
+    "rebuild-ftdi": "electron-rebuild --only ftdi",
+    "rebuild-serialport": "electron-rebuild -o serialport",
+    "build-packed-mac": "electron-builder --mac --x64",
+    "build-packed-win": "electron-builder --win --x64",
+    "build-packed-linux": "electron-builder --linux --x64",
+    "deploy-packed-mac": "electron-builder --mac --x64 --publish always",
+    "deploy-packed-win": "electron-builder  --win --x64 --publish always",
+    "deploy-packed-linux": "electron-builder --linux --x64 --publish always",
+    "build-unpacked-mac": "electron-builder --mac --x64 --dir",
+    "build-unpacked-win": "electron-builder --win --x64 --dir",
+    "test": "mocha",
+    "test:all": "mocha -R mocha-jenkins-reporter --timeout 20000 \"./src/test/**/*test-*.js\"",
+    "test:one": "mocha --watch -u bdd \"./src/test/**/test-*.js\" --grep \"test-store\""
+  },
+  "author": "OshaBlue LLC / nisch s.",
+  "license": "MIT",
+  "dependencies": {
+    "audio-generator": "^2.1.2",
+    "audio-speaker": "^1.5.1",
+    "builder-util": "^24.5.0",
+    "csv": "^5.3.2",
+    "data-table": "^2.0.0",
+    "electron-edge-js": "^12.18.5",
+    "electron-log": "^4.4.8",
+    "electron-updater": "^6.1.1",
+    "envelope-generator": "^3.0.0",
+    "ftdi-d2xx": "^1.1.2",
+    "node": "^12.18.3",
+    "serialport": "^10.5.0",
+    "speaker": "^0.5.4",
+    "strftime": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "electron": "^7.3.3",
+    "electron-builder": "22.10.5",
+    "electron-rebuild": "^3.2.9",
+    "mocha": "^9.2.2",
+    "spectron": "^9.0.0"
+  }
+}

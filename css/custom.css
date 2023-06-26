@@ -1,0 +1,664 @@
+/* header, main, footer { */
+  /* uncomment this when using the sidenav-fixed styling that will keep the
+   * sidenav displayed when the window is wide enough
+   */
+  /*padding-left: 300px;*/
+/* } */
+
+/* html { margin-left: calc(100vw - 100%); } */ /* no good for us */
+/* pulse divs create scroll bar on/off jitter in some view aspect ratios
+ * especially with the devtools open. this seems to help a bit at this time
+ */
+html { overflow-y: scroll; }
+
+.flex-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+/*.multipaneChart {
+  max-width: 100%;
+  min-width: 30%;
+  margin: 10px;
+}*/
+
+.divMultiChartTitleArea {
+  font-size: 1.5em;
+}
+
+#multiWaveformChartAccordion span.card-title {
+  font-size: 1.8em;
+  /*background-color: lightslategrey;*/
+  background-image: linear-gradient(to right, lightslategrey, rgba(0,0,0,0));
+  height: 24px;
+  line-height: 16px;
+  padding: 4px;
+}
+
+.dataChart-title {
+  color: rgba(240, 240, 240, 0.6);
+  font-size: 3em;
+}
+
+
+.container-buttons {
+  padding: 2px;
+  /*border: 1px dotted steelblue;*/
+}
+.container-buttons button {
+  margin: 2px;
+  padding: 0 4px;
+}
+
+pre.pre-scrollable {
+  max-height: 340px;
+  overflow-y: scroll;
+}
+pre.preserve-whitespace {
+    white-space: pre-wrap;
+}
+pre {
+    font-size: 0.9em;
+}
+pre.mini {
+  font-size: 0.8em;
+  height: 100px;
+  max-height: 100px;
+  overflow: scroll;
+}
+pre.mini::-webkit-scrollbar {
+    height: 4px;
+    width: 8px;
+    background-color: rgb(25, 200, 190);
+    -webkit-border-radius: 1ex;
+}
+
+pre.mini::-webkit-scrollbar-thumb {
+    background: rgb(25, 100, 70); /*#442;*/ /*#393812;*/
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px rgb(25, 200, 190);
+}
+
+pre-mini::-webkit-scrollbar-corner {
+    background-color: rgb(25, 200, 190);
+}
+
+
+
+.control-group {
+  margin-bottom: 1px;
+  border: 1px solid rgb(221,221,221);
+}
+/* not implemented right now
+.text-input-pair {
+  margin: 0;
+  border: 1px solid rgb(221,221,221);
+}*/
+
+/* Group items, like controlGroups */
+.control-group.col {
+  padding: 0;
+  margin-bottom: 4px;
+}
+#divCtrlGrp.row {
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgb(200,200,200);
+  margin-bottom: 2px;
+}
+#controlPortButtonsFromFileDiv input[type=text] {
+  margin-bottom: 2px;
+  margin-right: 2rem;
+  height: 2.4rem;
+}
+#controlPortButtonsFromFileDiv .col.s2 {
+  padding-right:0;
+}
+#controlPortButtonsFromFileDiv .col.s1 {
+  padding-left:2px;
+}
+#controlPortButtonsFromFileDiv .row {
+  margin-top: 4px;
+}
+#container-buttons .collapsible-body a.collapsible-header {
+  margin-right: 0;
+  color: #029ae4;
+  text-transform: none;
+}
+#sendButton {
+  height: 3rem;
+}
+#sendButtonSpan {
+  padding-right: 0;
+}
+p.control-group {
+  background-color: #c7ebe8;
+  font-weight: 300;
+  font-size: 1.2em;
+}
+p.custom-control-section {
+  font-size: 1.4em;
+  font-weight: 500;
+  /*padding-top: 4px;*/
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+p.custom-control-section .switch {
+  padding-left: 20px;
+}
+#divCustomControlVariableInputs .range-field {
+  font-size: 1.7em;
+  margin: 0px;
+}
+
+#active_ports_ui_buttons {
+  /* Indent from the left so that the pulse class attribute doesn't
+   * cycle the scroll bars on and off each pulse
+   */
+  padding-left: 40px;
+}
+
+#active_ports_ui_status_indicators .btn-small {
+  height: 24px;
+  line-height: 24px;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+#active_ports_ui_status_indicators {
+  /*padding-bottom: 12px;*/ /* use if have title in the section */
+  /* As above, pad the right generously so that the pulse class doesn't
+   * cycle the scroll bars contiually on and off
+   */
+  /* top right bottom left */
+  padding: 4px 40px 4px 4px;
+}
+
+#divTextInputRow input[type="range"] {
+  margin: 3px 0 10px;
+}
+
+#divControlActionLog {
+  display: inline;
+}
+
+/*
+  Override in-line style from the data table module that inserts the inline
+  and creates a padding around cell elements
+*/
+#ftdi_ports div.data-table-container td.c {
+  padding: 2px !important;
+}
+
+/*
+  Override user-agent for the margin around the checkbox controls in the
+  ftdi_ports data table - it was expanding the whole row
+*/
+#ftdi_ports div.data-table-container p {
+  margin: 0px;
+}
+
+
+
+
+
+/* User Interface Variations */
+#capture_ui_dynamically_loaded .row {
+  margin-bottom: 0.1em;
+}
+#capture_ui_directory_select .input-field {
+  margin-top: 0.5em;
+}
+#capture_ui_directory_select input {
+  height: 2.2rem;
+  margin-bottom: 4px;
+}
+/* #capture_ui_status_indicators {
+
+} */
+#capture_ui_status_indicators .btn-small {
+  height: 24px;
+  line-height: 24px;
+  font-size: 11px;
+  margin-left: 4px;
+  margin-top: 6px;
+}
+/* */
+#divStructureIdInfo.input-field {
+  margin-top: 0.6em;
+}
+label#labelForStructureIdInfo.active {
+  line-height: 1.5em;
+}
+label#labelForStructureIdInfo {
+  line-height: 0.5em;
+}
+input#structureIdInfo {
+  height: 1.5em;
+  margin-bottom: 0;
+}
+/* */
+span#filesWrittenBadge.badge {
+  height: 18px;
+  line-height: 18px;
+  margin-top: 3px;
+}
+
+#capture_ui_buttons button.tempUiBigButtonSmallText {
+  font-size: 1.5em;
+  line-height: 1.1;
+}
+
+#capture_ui_buttons button {
+  width:  45%;
+  height: 80px;
+  font-size: 4em;
+  margin: 6px;
+  /*background-image: url('../assets/eagle-bear.jpg');*/ /* for fun */
+}
+/*#capture_ui_buttons .green {
+  opacity: 0.5;
+}*/
+#capture_ui_current_filename.row {
+  margin: 6px;
+  font-size: 1.2em;
+  padding: 3px;
+}
+
+/* https://codepen.io/wifeo/pen/KwdXwV */
+.pulse-div {
+  position: relative;
+  /* width: 100px; */
+  /* height: 100px; */
+  border: 2px;
+  border-color: #00ffbf;
+  box-shadow: 0 0 0 0 rgba(0, 204, 123, 0.5);
+  /* border-radius: 50%; */
+  /*background-color: #b3ffcc;*/
+  /* background-image: url(http) */
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  -webkit-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+  -moz-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+  -ms-animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+  animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+.pulse-div:hover {
+  -webkit-animation: none;
+  -moz-animation: none;
+  -ms-animation: none;
+  animation: none;
+}
+@-webkit-keyframes pulse {to {box-shadow: 0 0 0 30px rgba(0, 204, 123, 0);}}
+@-moz-keyframes pulse {to {box-shadow: 0 0 0 30px rgba(0, 204, 123, 0);}}
+@-ms-keyframes pulse {to {box-shadow: 0 0 0 30px rgba(0, 204, 123, 0);}}
+@keyframes pulse {to {box-shadow: 0 0 0 30px rgba(0, 204, 123, 0);}}
+
+
+/* This is the default side nav popout/in breakpoint */
+/*@media only screen and (max-width: 992px) {*/
+/*@media only screen and (max-width: 992px) {
+  .sidenav.sidenav-fixed {
+    -webkit-transform: translateX(-105%);
+    transform: translateX(-105%);
+  }
+}*/ /* TODO this doesn't override ... */
+
+
+
+
+
+@media only screen and (max-width : 992px) {
+  header, main, footer {
+    padding-left: 2px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* rot dropdown icons */
+/* match any nested accordions */
+li.active > a.collapsible-header i.sidenav-dd-expand {
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+    transform: rotate(90deg);
+}
+
+
+#btnControlPortStatus > i {
+  vertical-align: top;
+  font-size: 1.5rem;
+}
+button.expanded > i {
+  -ms-transform: rotate(90deg); /* IE 9 */
+  -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+  transform: rotate(90deg);
+}
+
+
+#hardware-id-container.row {
+  margin-bottom: 4px;
+  border: #84fdfd 1px dotted;
+  padding: 5px 0px 6px 0px;
+  box-shadow: 0px 0px 2px 2px turquoise inset;
+  background-color: gainsboro;
+}
+ #hardware-id-container button {
+   height: 20px;
+   line-height: 20px;
+ }
+
+
+
+
+
+/* Materializecss overrides */
+
+
+
+/* Some general condensing */
+html {
+  line-height: 1.1;
+}
+
+
+
+/* Header showing App name and click = reload */
+nav {
+  line-height: 18px;
+  height: 18px;
+}
+a.brand-logo {
+  font-size: 1rem;
+}
+
+
+
+/* Condense the collapsible real estate a bit */
+.collapsible {
+  /* top right bottom left */
+  margin: 0.5rem 0 0.5rem 0;
+}
+a.collapsible-header {
+  /*       vert  horiz         */
+  /*       top   horiz   bott  */
+  padding: 0.3em 1em;
+  text-transform: uppercase;
+}
+/* Line up the icons with the text */
+.collapsible-header i {
+  vertical-align: bottom;
+  font-size: 14px !important;
+}
+.collapsible-body {
+  padding: 0.5rem;
+}
+
+
+
+
+/* Condense the card content a bit */
+.card .card-content {
+  padding: 12px;
+}
+.card .card-content .card-title {
+  line-height: 14px;
+  margin-bottom: 4px;
+}
+.card .card-title {
+  font-size: 14px;
+  font-weight: 200;
+}
+.card .card-action {
+  padding: 4px;
+}
+
+
+
+/* Condense text inputs a bit */
+/* Top one just for the early dev serial send text compaction */
+#stuffToSendSpan .input-field .prefix ~ input {
+  height: 1.5rem;
+  margin-bottom: 1px;
+}
+.input-field {
+  margin-bottom: 0;
+}
+.input-field .helper-text {
+  min-height: 8px;
+}
+
+/* General layout condensing */
+.row {
+  margin-bottom: 0;
+}
+
+/* Switches */
+.switch {
+  display: inline-block;
+}
+
+
+
+
+/* Progress */
+#divControlActionLog .progress {
+  margin: 4px;
+  width: 95%;
+}
+/* Progress in UI customization */
+#capture_ui_current_filename .progress {
+  height: 1.4em;
+  margin: 6px;
+  width: 99%; /* this keeps the bar within the holder so it doesn't overextend to the right */
+}
+#uiProgressTextBar.determinate {
+  height: 100%;
+  /* margin: 6px; */ /* no margin means the bar fill will fill up the container height */
+  padding: 3px;
+  /* the next two force the text to be seen even if the progress bar width is
+   * shorter than the text length */
+  overflow: visible;
+  white-space: nowrap;
+}
+
+
+
+
+
+/* End: Materializecss overrides */
+
+
+
+
+/* HTML5 Customizations + Materializecss - Range */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* ignore webkit defaults */
+  border: 2px solid;
+  border-color: rgb(101, 106, 255);
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  /*background:rgba(0, 140, 150, 0.9);*/
+  margin-top: -11px;
+}
+/* alas the bubble size 30px x 30px is hard coded into the materializecss range code */
+input[type=range]+.thumb.active .value {
+  font-size: 22px;
+  padding-left: 2px;
+  padding-top: 2px;
+  margin: 0px;
+}
+
+
+
+
+
+
+
+
+
+
+/* Chart */
+.flash-color {
+  background-color: rgba(244, 255, 0, 0.1);
+}
+.sound-indicator {
+  height: 15px;
+  width: 25px;
+  /*opacity: 0.3;*/
+  transition: .3s ease;
+  position: absolute;
+  margin-left: 5px; /* outside of the border */
+  padding: 1px;     /* between image and border */
+  border-top: white 1px dashed;
+  border-bottom: white 1px dashed;
+}
+.mute-unmute {
+  height: 20px;
+  /*width: 25px;*/
+  /*opacity: 0.3;*/
+  transition: .3s ease;
+  position: absolute;
+  margin-left: 10px;
+}
+path {
+    stroke: steelblue;
+    /*stroke-width: 2;*/
+    fill: none;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.axis-grid-major line {
+  fill: none;
+    stroke: grey;
+    stroke-width: 0.5;
+    shape-rendering: crispEdges;
+}
+.axis-grid-minor line {
+  fill: none;
+    stroke: grey;
+    stroke-width: 0.2;
+    shape-rendering: crispEdges;
+}
+
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: #ffab00;
+    /*stroke-width: 1;*/
+}
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+
+/* Part of responsive svg handling */
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  /*height: 560px;*/ /*560px;*/ /* this relates to chart height when set to 500px instead of 300px and is explicitly set here until a better solution */
+  padding-bottom: 33%; /* aspect ratio - update for graph init dims */
+  vertical-align: top;
+  /*overflow: hidden;*/
+}
+.svg-container-tall {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  height: 560px; /*560px;*/ /* this relates to chart height when set to 500px instead of 300px and is explicitly set here until a better solution */
+  padding-bottom: 33%; /* aspect ratio - update for graph init dims */
+  vertical-align: top;
+  /*overflow: hidden;*/
+}
+.svg-content-responsive {
+  display: inline-block;
+  position: absolute; /*absolute;*//* absolute breaks parent expanding to fit this child */
+  top: 0px;
+}
+
+#notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+.hidden {
+  display: none;
+}
+
+.button-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 9999;
+  text-align: center;
+}
+
+.settings-button-background {
+  display: inline-block;
+  background-color: #b2bec3;
+  padding: 5px;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.settings-button-background:hover {
+  background-color: #74b9ff;
+}
+
+.reload-button-background {
+  display: inline-block;
+  background-color: #b2bec3;
+  padding: 5px;
+  border-radius: 50%;
+  text-align: center;
+  margin-right: 20px;
+}
+
+.reload-button-background:hover {
+  background-color: #74b9ff;
+}
+
+.footer-icon-settings {
+  display: block;
+  color: #0984e3;
+
+}
+
+.footer-icon-settings:hover {
+  color: #6c5ce7; /* Changes the icon color on hover */
+}cnpm statr
+
+main {
+  margin-bottom: 60px; /* Adjust the value as needed */
+}
+/* End: Chart */
