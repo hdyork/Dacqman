@@ -46,8 +46,8 @@ const settingsDefaults = {
   customCaptureOptionsFilePathPackaged: './user-data/capture-options.json',
   customTransducerCalibrationFilesDirectory: './user-data/transducer-calibration-files/',
   customTransducerCalibrationFilesDirectoryPackaged: './user-data/transducer-calibration-files/',
-  interfaceDefault: 'regular',
-  interface: 'dataCaptureFocused',          // regular, dataCaptureFocused
+  interfaceDefault: 'dataCaptureFocused',
+  interface: 'regular',          // regular, dataCaptureFocused
   delayControlPortOpenMs: 1000,             // delay + forWhat + units {Ms, Sec, etc.} // TODO implement setter
   // OB NKS: circa imaginary v0.0.14
   boolUsePlugins: true                      // true, false
