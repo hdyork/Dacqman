@@ -11,78 +11,84 @@
 
 
 
-
-
-  <div class="row">
-    <div id="capture_ui_status_indicators" class="col s12">
-      <!-- Status --><!-- Top -->
-
-      <!-- Left -->
-      <div class="col s3">
-        <button id="btnFilesWritten" class="btn-small blue lighten-4 disabled">
-          Files Written
-          <span id="filesWrittenBadge" class="new badge grey">0</span>
-        </button>
-      </div>
-
-      <!-- Target Scan Structure Info Tag that goes into file -->
-      <div id="divStructureIdInfo" class="input-field col s6">
-        <label id="labelForStructureIdInfo" for="structureIdInfo">Structure ID Information (Optional) [64 Characters Max]</label>
-        <input disabled id="structureIdInfo" type="text" />
-      </div>
-
-      <!-- Right -->
-      <div class="col s3">
-        <button id="btnErrors" class="btn-small red lighten-4 disabled right">Errors</button>
-        <button id="btnWarnings" class="btn-small orange lighten-4 disabled right">Warnings</button>
-      </div>
-
+    <div id="hardware-id-container" class="row">
+        <div class="col">
+            <button data-target="modal-hardwareSelect" id="hardwareIdButton" class="btn-small blue lighten-2 modal-trigger">Hardware is: <span id="hardware-id">Undetermined</span></button>
+        </div>
     </div>
-  </div>
-
-
-
-
-
-
-
-
-
-  <div class="row">
-    <div id="capture_ui_directory_select" class="row">
-      <div class="input-field">
-        <i class="large material-icons prefix">folder</i>
-        <input disabled type="text" id="selectOutputDirectory" class="validate">
-        <label id="labelForSelectOutputDirectory" for="selectOutputDirectory">Click to select the output directory</label>
-        <!--<span class="helper-text" data-error="wrong" data-success="right"></span>-->
-      </div>
+    <div id="ports_go_button">
+        <button id="portsGoButtonInactive" class="btn-large disabled pulse"><i class="material-icons left">device_hub</i>Waiting for serial port enumeration ...</button>
     </div>
-  </div>
+
+
+        <div class="row">
+            <div id="capture_ui_status_indicators" class="col s12">
+                <!-- Status --><!-- Top -->
+                <!-- Left -->
+                <div class="col s3">
+                    <button id="btnFilesWritten" class="btn-small blue lighten-4 disabled">
+                        Files Written
+                        <span id="filesWrittenBadge" class="new badge grey">0</span>
+                    </button>
+                </div>
+
+                <!-- Target Scan Structure Info Tag that goes into file -->
+                <div id="divStructureIdInfo" class="input-field col s6">
+                    <label id="labelForStructureIdInfo" for="structureIdInfo">Structure ID Information (Optional) [64 Characters Max]</label>
+                    <input disabled id="structureIdInfo" type="text" />
+                </div>
+
+                <!-- Right -->
+                <div class="col s3">
+                    <button id="btnErrors" class="btn-small red lighten-4 disabled right">Errors</button>
+                    <button id="btnWarnings" class="btn-small orange lighten-4 disabled right">Warnings</button>
+                </div>
+
+            </div>
+        </div>
 
 
 
-  <div class="row">
-    <div id="capture_ui_current_filename" class="row z-depth-3 hide">
-      <div id="uiProgressHolder" class="progress">
-        <div id="uiProgressTextBar" class="determinate" style="width: 100%"></div>
-      </div>
-    </div>
-  </div>
 
 
 
-  <div class="row">
-    <div id="capture_ui_buttons" class="col s12">
-      <!--Controls<br>-->
-      <button id="btnCaptureStart" class="btn-large green disabled" title="Click to begin data capture">
-        START
-      </button>
-      <button id="btnCaptureStop" class="btn-large red right disabled" title="Click to end data capture">
-        STOP
-      </button>
-    </div>
-  </div>
 
+
+
+        <div class="row">
+            <div id="capture_ui_directory_select" class="row">
+                <div class="input-field">
+                    <i class="large material-icons prefix">folder</i>
+                    <input disabled type="text" id="selectOutputDirectory" class="validate">
+                    <label id="labelForSelectOutputDirectory" for="selectOutputDirectory">Click to select the output directory</label>
+                    <!--<span class="helper-text" data-error="wrong" data-success="right"></span>-->
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div id="capture_ui_current_filename" class="row z-depth-3 hide">
+                <div id="uiProgressHolder" class="progress">
+                    <div id="uiProgressTextBar" class="determinate" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div id="capture_ui_buttons" class="col s12">
+                <!--Controls<br>-->
+                <button id="btnCaptureStart" class="btn-large green disabled" title="Click to begin data capture">
+                    START
+                </button>
+                <button id="btnCaptureStop" class="btn-large red right disabled" title="Click to end data capture">
+                    STOP
+                </button>
+            </div>
+        </div>
 
 
 </div>

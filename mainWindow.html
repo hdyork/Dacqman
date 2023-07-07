@@ -204,20 +204,14 @@ loadLibraries(online);
   -->
 
   <main>
-    <!-- TODO yeah, figure out the sicenav application and update when to show
+      <!-- TODO yeah, figure out the sicenav application and update when to show
          as well as the burger icon and why media query overrides are not
          working  -->
-    <nav>
-      <!--<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>-->
-      <div class="nav-wrapper">
-        <a href="" class="brand-logo center"> (click to reload this App)</a>
-        <!--<a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>-->
-      </div>
-    </nav>
-    <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
-    <!-- I kinda miss bootstrap sometimes ... -->
+    
+      <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
+      <!-- I kinda miss bootstrap sometimes ... -->
 
-    <ul></ul>
+      <ul></ul>
 
 
 
@@ -226,112 +220,106 @@ loadLibraries(online);
 
 
 
-    <ul id="serialPortSelectionAccordion" class="collapsible collapsible-accordion">
-      <li class="active">
-        <a class="collapsible-header">Serial Port Selection
-          <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-        </a>
-        <div class="collapsible-body">
-
-          <h6>Virtual Serial Port (VCP) Devices</h6>
-          <div id="vcp_error"></div>
-          <div id="vcp_ports"></div>
-
-          <h6>FTDI-Driver (D2XX, etc.) Devices</h6>
-          <div id="ftdi_error"></div>
-          <div id="ftdi_ports"></div>
-
-          <!--<hr />-->
-
-          <!--
-          <ul class="collapsible collapsible-accordion">
-            <li>
-              <a class="collapsible-header">Notes about the port discovery and implementation
-                <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+      <ul id="serialPortSelectionAccordion" class="collapsible collapsible-accordion">
+          <li class>
+              <a class="collapsible-header">
+                  Serial Port Selection
+                  <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
               </a>
               <div class="collapsible-body">
-                <div id="ports-info">
-                  <p>Note: These are serial ports returned by serialport which means that
-                    your device would be listed here if is intended to enumerate as a serial
-                    port, real or virtual.  For example, using the FTDI VCP driver.
-                  </p>
-                  <p>
-                    However, if your device is intended to be accessed as an FTDO D2XX driver
-                    device target, then you should/will not see it in this listing until
-                    the d2xx device listing is added to this code.  You can still click SELECTME
-                    at any serial device here and you'll then see the buttons to test access to the
-                    first detected d2xx FTDI device.
-                  </p>
-                  <p>
-                    The FTDI (D2XX) devices are listed in the console.log output, so you can
-                    see which device is at index 0 (and thus the device to be opened).
-                  </p>
-                </div>
+
+                  <h6>Virtual Serial Port (VCP) Devices</h6>
+                  <div id="vcp_error"></div>
+                  <div id="vcp_ports"></div>
+
+                  <h6>FTDI-Driver (D2XX, etc.) Devices</h6>
+                  <div id="ftdi_error"></div>
+                  <div id="ftdi_ports"></div>
+
+                  <!--<hr />-->
+                  <!--
+                  <ul class="collapsible collapsible-accordion">
+                    <li>
+                      <a class="collapsible-header">Notes about the port discovery and implementation
+                        <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+                      </a>
+                      <div class="collapsible-body">
+                        <div id="ports-info">
+                          <p>Note: These are serial ports returned by serialport which means that
+                            your device would be listed here if is intended to enumerate as a serial
+                            port, real or virtual.  For example, using the FTDI VCP driver.
+                          </p>
+                          <p>
+                            However, if your device is intended to be accessed as an FTDO D2XX driver
+                            device target, then you should/will not see it in this listing until
+                            the d2xx device listing is added to this code.  You can still click SELECTME
+                            at any serial device here and you'll then see the buttons to test access to the
+                            first detected d2xx FTDI device.
+                          </p>
+                          <p>
+                            The FTDI (D2XX) devices are listed in the console.log output, so you can
+                            see which device is at index 0 (and thus the device to be opened).
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                -->
+
+                  
+
+
+
               </div>
-            </li>
-          </ul>
+          </li>
+      </ul>
+
+
+
+
+
+
+
+
+      <!-- OPTION? Place into card or section, etc.-->
+      <div id="active_ports_ui_indicators" class="row">
+
+          <div id="active_ports_ui_buttons" class="hide col s4">
+              <!--Controls<br>-->
+              <button id="btnDataPortStatus" class="btn-small blue hide" onclick="btnDataPortClick(this)" title="Click to Close/Open Data Streaming Port">
+                  Data Port
+              </button>
+              <button id="btnControlPortStatus" class="btn-small blue hide" onclick="btnControlPortClick(this)" title="Click to Expand">
+                  Control Port<i class="material-icons">chevron_right</i>
+              </button>
+          </div>
+
+          <div id="active_ports_ui_status_indicators" class="hide col s8">
+              <!--Status<br>-->
+              <button id="btnListeningForData" class="btn-small blue lighten-4 disabled right">Listening for Data</button>
+              <button id="btnBufferOverflowing" class="btn-small lighten-2 disabled right">Buffer Overflowing</button>
+              <button id="btnSilenceIndicators" class="btn-small blue lighten-4 disabled right" onclick="silenceIndicators(this)">Silence Flashers</button>
+          </div>
+
+      </div>
+
+
+
+
+
+
+
+      <!-- OPTION? Place into card or section, etc.-->
+      <div id="capture_ui" class="hide">
+          <!-- row"> -->
+          <!-- Please see:
+              - userInterfaceDataCaptureFocused.html
+              - userInterface.js
         -->
+          --------
 
-          <div id="hardware-id-container" class="row">
-            <div class="col">
-              <button data-target="modal-hardwareSelect" id="hardwareIdButton" class="btn-small blue lighten-2 modal-trigger">Hardware is: <span id="hardware-id">Undetermined</span></button>
-            </div>
-          </div>
-
-          <div id="ports_go_button">
-            <button id="portsGoButtonInactive" class="btn-large disabled pulse"><i class="material-icons left">device_hub</i>Waiting for serial port enumeration ...</button>
-          </div>
-
-        </div>
-      </li>
-    </ul>
-
-
-
-
-
-
-
-
-    <!-- OPTION? Place into card or section, etc.-->
-    <div id="active_ports_ui_indicators" class="row">
-
-      <div id="active_ports_ui_buttons" class="hide col s4">
-        <!--Controls<br>-->
-        <button id="btnDataPortStatus" class="btn-small blue hide" onclick="btnDataPortClick(this)" title="Click to Close/Open Data Streaming Port">
-          Data Port
-        </button>
-        <button id="btnControlPortStatus" class="btn-small blue hide" onclick="btnControlPortClick(this)" title="Click to Expand">
-          Control Port<i class="material-icons">chevron_right</i>
-        </button>
       </div>
-
-      <div id="active_ports_ui_status_indicators" class="hide col s8">
-        <!--Status<br>-->
-        <button id="btnListeningForData" class="btn-small blue lighten-4 disabled right">Listening for Data</button>
-        <button id="btnBufferOverflowing" class="btn-small lighten-2 disabled right">Buffer Overflowing</button>
-        <button id="btnSilenceIndicators" class="btn-small blue lighten-4 disabled right" onclick="silenceIndicators(this)">Silence Flashers</button>
-      </div>
-
-    </div>
-
-
-
-
-
-
-
-    <!-- OPTION? Place into card or section, etc.-->
-    <div id="capture_ui" class="hide"> <!-- row"> -->
-
-      <!-- Please see:
-            - userInterfaceDataCaptureFocused.html
-            - userInterface.js
-      -->
-
-      --------
-
-    </div>
+    
 
 
 
@@ -340,151 +328,152 @@ loadLibraries(online);
 
 
 
-
-    <!-- .......................................... --><!--
+      <!-- .......................................... -->
+      <!--
     ***********************************************
       CARD - Serial Port Buttons / Controls (Init no display)
     *********************************************** -->
-    <!-- Could add 2 levels of grid containment to this card section -->
-    <!-- DL0100A1 DLITE-0100A1 set display style below to block or similar to show the buttons-example.json section -->
-    <div id="activeSerialPortStuff" class="card teal lighten-4" style="display:block;"> <!--"display:block;">-->
-      <div class="card-content">
-        <div id="container-buttons" class="container-buttons">
+      <!-- Could add 2 levels of grid containment to this card section -->
+      <!-- DL0100A1 DLITE-0100A1 set display style below to block or similar to show the buttons-example.json section -->
+      <div id="activeSerialPortStuff" class="card teal lighten-4" style="display:block;">
+          <!--"display:block;">-->
+          <div class="card-content">
+              <div id="container-buttons" class="container-buttons">
 
-          <!-- COLLAPSIBLE HEADER TODO -->
-          <!-- can change this id now if coordinate with startup mainWindows.js startup behavior -->
-          <ul class="collapsible collapsible-accordion">
-            <li> <!-- class="active"> --><!-- active = open on start? -->
-              <a class="collapsible-header" title="eg for single port devices like DL-Series GXN etc.">Commands from file (eg buttons-example.json, always visible)
-                <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-              </a>
-              <div class="collapsible-body">
-              <!-- COLLAPSIBLE CONTENT -->
+                  <!-- COLLAPSIBLE HEADER TODO -->
+                  <!-- can change this id now if coordinate with startup mainWindows.js startup behavior -->
+                  <ul class="collapsible collapsible-accordion">
+                      <li>
+                          <!-- class="active"> --><!-- active = open on start? -->
+                          <a class="collapsible-header" title="eg for single port devices like DL-Series GXN etc.">
+                              Commands from file (eg buttons-example.json, always visible)
+                              <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+                          </a>
+                          <div class="collapsible-body">
+                              <!-- COLLAPSIBLE CONTENT -->
 
-                <div class="card-action">
-                  <div id="serialButtonsFromFileDiv" class="row"></div>
-                </div>
+                              <div class="card-action">
+                                  <div id="serialButtonsFromFileDiv" class="row"></div>
+                              </div>
 
-              <!-- CLOSING COLLAPSIBLE FOOTER -->
-              </div><!-- collapsible-body -->
-            </li><!-- collapsible li -->
-          </ul><!-- collapsible ul -->
+                              <!-- CLOSING COLLAPSIBLE FOOTER -->
+                          </div><!-- collapsible-body -->
+                      </li><!-- collapsible li -->
+                  </ul><!-- collapsible ul -->
 
-        </div><!-- /container-buttons -->
-      </div><!-- /card-content-->
-    </div><!-- /card -->
-
-    <!-- PRIOR STUFF -->
-        <!-- Prior active serial port basic controls - was at the top -->
-        <!--
-        <span class="card-title">Selected Serial Port:&nbsp;
-          <span id="activePort"></span>
-        </span>
-        <br>
-        -->
-        <!--<div class="container-buttons">-->
-          <!--
-          Available controls:
-          <div class="card-action">
-            <p>Standard Buttons</p>
-            <span id="serialOpenBtnSpan">
-              <button name="serialOpenBtn" id="serialOpenBtn" onclick="serialOpen()">Open</button></span>
-            <span id="serialCloseBtnSpan">
-              <button name="serialCloseBtn" id="serialCloseBtn" onclick="serialClose()">Close</button></span>
-            <span id="serialTestWriteSpan">
-              <button name="serialTestWrite" id="serialTestWrite" onclick="serialTestWrite()">Test Write</button></span>
-          </div>
-          -->
-          <!--<div class="card-action">
-            <p>Custom Buttons Loaded From File:</p>
-            <div id="serialButtonsFromFileDiv"></div>
-            -->
-          <!--</div>--><!-- /card-action -->
-        <!--</div>--><!-- /container-buttons -->
+              </div><!-- /container-buttons -->
+          </div><!-- /card-content-->
+      </div><!-- /card -->
+      <!-- PRIOR STUFF -->
+      <!-- Prior active serial port basic controls - was at the top -->
+      <!--
+    <span class="card-title">Selected Serial Port:&nbsp;
+      <span id="activePort"></span>
+    </span>
+    <br>
+    -->
+      <!--<div class="container-buttons">-->
+      <!--
+    Available controls:
+    <div class="card-action">
+      <p>Standard Buttons</p>
+      <span id="serialOpenBtnSpan">
+        <button name="serialOpenBtn" id="serialOpenBtn" onclick="serialOpen()">Open</button></span>
+      <span id="serialCloseBtnSpan">
+        <button name="serialCloseBtn" id="serialCloseBtn" onclick="serialClose()">Close</button></span>
+      <span id="serialTestWriteSpan">
+        <button name="serialTestWrite" id="serialTestWrite" onclick="serialTestWrite()">Test Write</button></span>
+    </div>
+    -->
+      <!--<div class="card-action">
+      <p>Custom Buttons Loaded From File:</p>
+      <div id="serialButtonsFromFileDiv"></div>
+      -->
+      <!--</div>--><!-- /card-action -->
+      <!--</div>--><!-- /container-buttons -->
       <!--</div>
     </div>-->
-    <!-- /PRIOR STUFF -->
-
-
-
-
-
-
-    <!-- .......................................... --><!--
+      <!-- /PRIOR STUFF -->
+      <!-- .......................................... -->
+      <!--
     ***********************************************
       CARD - Control Port Buttons / Controls (Init no display)
     *********************************************** -->
-    <!-- Could add 2 levels of grid containment to this card section -->
-    <div id="activeControlPort" class="card teal lighten-4" style="display:none;">
-      <div class="card-content">
-        <span class="card-title">Control Port:&nbsp;
-          <span id="activeControlPortName"></span>
-        </span>
-        <br>
-        <div id="container-buttons" class="container-buttons">
+      <!-- Could add 2 levels of grid containment to this card section -->
+      <div id="activeControlPort" class="card teal lighten-4" style="display:none;">
+          <div class="card-content">
+              <span class="card-title">
+                  Control Port:&nbsp;
+                  <span id="activeControlPortName"></span>
+              </span>
+              <br>
+              <div id="container-buttons" class="container-buttons">
 
-          <ul class="collapsible collapsible-accordion">
-            <li>
-              <a class="collapsible-header">Standard Buttons and Generic Command Send Tool
-                <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-              </a>
-              <div class="collapsible-body">
-                <div class="row">
-                  <div class="card-action col s5">
-                    <!--<p class="custom-control-section">Standard Buttons and Generic Command Send Tool</p>-->
-                    <!--<span id="controlPortOpenBtnSpan">-->
-                      <button name="controlPortOpenBtn" id="controlPortOpenBtn" onclick="controlPortOpen(this)" >
-                        Open
-                      </button>
-                    <!--</span>-->
-                    <!--<span id="controlPortCloseBtnSpan">-->
-                      <button name="controlPortCloseBtn" id="controlPortCloseBtn" onclick="controlPortClose(this)" >
-                        Close
-                      </button>
-                    <!--</span>-->
-                    <!--<span id="controlTestWriteSpan">
-                      <button name="controlPortTestWrite" id="controlPortTestWrite" onclick="controlTestWrite()">Test Write</button></span>-->
-                  </div><!-- s5 -->
-                  <div class="card-action col s7"> <!-- row"> -->
-                    <!--<div class="col s7">-->
-                      <div class="row">
-                        <div id="sendButtonSpan" class="col s2 right-align">
-                          <button id="sendButton" onclick="controlPortSendStuff()">Send</button>
-                        </div>
-                        <div id="stuffToSendSpan" class="col s10">
-                          <div class="input-field">
-                            <i class="material-icons prefix">account_circle</i>
-                            <input type="text" id="stuffToSend" placeholder="Put (or Type) some stuff here to send" class="validate">
-                            <label for="stuffToSend">Stuff to Send</label>
-                            <span class="helper-text" data-error="wrong" data-success="right">Type (a) char(s) to send as ASCII=>0xhh</span>
+                  <ul class="collapsible collapsible-accordion">
+                      <li>
+                          <a class="collapsible-header">
+                              Standard Buttons and Generic Command Send Tool
+                              <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+                          </a>
+                          <div class="collapsible-body">
+                              <div class="row">
+                                  <div class="card-action col s5">
+                                      <!--<p class="custom-control-section">Standard Buttons and Generic Command Send Tool</p>-->
+                                      <!--<span id="controlPortOpenBtnSpan">-->
+                                      <button name="controlPortOpenBtn" id="controlPortOpenBtn" onclick="controlPortOpen(this)">
+                                          Open
+                                      </button>
+                                      <!--</span>-->
+                                      <!--<span id="controlPortCloseBtnSpan">-->
+                                      <button name="controlPortCloseBtn" id="controlPortCloseBtn" onclick="controlPortClose(this)">
+                                          Close
+                                      </button>
+                                      <!--</span>-->
+                                      <!--<span id="controlTestWriteSpan">
+                                      <button name="controlPortTestWrite" id="controlPortTestWrite" onclick="controlTestWrite()">Test Write</button></span>-->
+                                  </div><!-- s5 -->
+                                  <div class="card-action col s7">
+                                      <!-- row"> -->
+                                      <!--<div class="col s7">-->
+                                      <div class="row">
+                                          <div id="sendButtonSpan" class="col s2 right-align">
+                                              <button id="sendButton" onclick="controlPortSendStuff()">Send</button>
+                                          </div>
+                                          <div id="stuffToSendSpan" class="col s10">
+                                              <div class="input-field">
+                                                  <i class="material-icons prefix">account_circle</i>
+                                                  <input type="text" id="stuffToSend" placeholder="Put (or Type) some stuff here to send" class="validate">
+                                                  <label for="stuffToSend">Stuff to Send</label>
+                                                  <span class="helper-text" data-error="wrong" data-success="right">Type (a) char(s) to send as ASCII=>0xhh</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <!--</div>-->
+                                  </div><!-- s7 -->
+                              </div><!-- row -->
+                          </div><!-- collapsible-body -->
+                      </li><!-- collapsible li -->
+                  </ul><!-- collapsible ul -->
+
+
+                  <ul class="collapsible collapsible-accordion">
+                      <li class="active">
+                          <a class="collapsible-header">
+                              Custom Controls Loaded From File
+                              <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+                          </a>
+                          <div class="collapsible-body">
+                              <div class="card-action">
+                                  <!--<p class="custom-control-section">Custom Control Buttons Loaded From File</p>-->
+                                  <div id="controlPortButtonsFromFileDiv" class="row"></div>
+                              </div>
                           </div>
-                        </div>
-                      </div>
-                    <!--</div>-->
-                  </div><!-- s7 -->
-                </div><!-- row -->
-              </div><!-- collapsible-body -->
-            </li><!-- collapsible li -->
-          </ul><!-- collapsible ul -->
+                      </li>
+                  </ul>
 
-
-          <ul class="collapsible collapsible-accordion">
-            <li class="active">
-              <a class="collapsible-header">Custom Controls Loaded From File
-                <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-              </a>
-              <div class="collapsible-body">
-                <div class="card-action">
-                  <!--<p class="custom-control-section">Custom Control Buttons Loaded From File</p>-->
-                  <div id="controlPortButtonsFromFileDiv" class="row"></div>
-                </div>
               </div>
-            </li>
-          </ul>
-
-        </div>
+          </div>
       </div>
-    </div>
 
 
 
@@ -492,110 +481,105 @@ loadLibraries(online);
 
 
 
-    <!-- .......................................... --><!--
+      <!-- .......................................... -->
+      <!--
     ***********************************************
       CARD - Chart (Single Waveform)
     *********************************************** -->
-    <ul id="singleWaveformChartAccordion" class="collapsible collapsible-accordion">
-      <li class="active">
-        <a class="collapsible-header">Single (Channel) Waveform Data View(s)
-          <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-        </a>
-        <div id="divSingleWaveformChart" class="collapsible-body">
+      <ul id="singleWaveformChartAccordion" class="collapsible collapsible-accordion">
+          <li class="active">
+              <a class="collapsible-header">
+                  Single (Channel) Waveform Data View(s)
+                  <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+              </a>
+              <div id="divSingleWaveformChart" class="collapsible-body">
 
-          <div class="row">
-            <div class="col s12"><!-- was col s12 m7 -->
-              <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                  <span class="card-title">
-                    <span class="chart-title">Waveform Display</span>
-                    <span id="chartProcessedWfInfo" class="chart-title" style="float:right">Processed WF Info</span> <!-- <PLUGIN /> -->
-                  </span>
-                  <div id="chart"></div>
-                  <div class="card-action">
-                    <!--<a href="#">-->Double-click chart background to reset zoom<!--</a>-->
+                  <div class="row">
+                      <div class="col s12">
+                          <!-- was col s12 m7 -->
+                          <div class="card blue-grey darken-1">
+                              <div class="card-content white-text">
+                                  <span class="card-title">
+                                      <span class="chart-title">Waveform Display</span>
+                                      <span id="chartProcessedWfInfo" class="chart-title" style="float:right">Processed WF Info</span> <!-- <PLUGIN /> -->
+                                  </span>
+                                  <div id="chart"></div>
+                                  <div class="card-action">
+                                      <!--<a href="#">-->Double-click chart background to reset zoom<!--</a>-->
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-        </div><!-- collapsible-body -->
-      </li><!-- collapsible li -->
-    </ul><!-- collapsible ul -->
-
-
-
-
-
-
-
-    <!-- .......................................... --><!--
+              </div><!-- collapsible-body -->
+          </li><!-- collapsible li -->
+      </ul><!-- collapsible ul -->
+      <!-- .......................................... -->
+      <!--
     ***********************************************
       CARD - Multipane-Chart
     *********************************************** -->
-    <ul id="multiWaveformChartAccordion" class="collapsible collapsible-accordion">
-      <li>
-        <a class="collapsible-header">Multi-Waveform Data View(s)
-          <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
-        </a>
-        <div class="collapsible-body">
+      <ul id="multiWaveformChartAccordion" class="collapsible collapsible-accordion">
+          <li class="active">
+              <a class="collapsible-header">
+                  Multi-Waveform Data View(s)
+                  <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+              </a>
+              <div class="collapsible-body" style="display: block;">
 
-          <div class="row">
-            <div class="col s12"><!-- was col s12 m7 -->
-              <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                  <span class="card-title">
-                      <span class="chart-title">
-                          Multi-Waveform Display
-                          <span id="sound-control">
-                              <img class="mute-unmute" src="./assets/icon-unmuted-audio-50-wh.png" alt="Audio (Unmuted)">
-                          </span>
-                          <div id="multiWfsWindowPopout" class="right" style="cursor: pointer;">
-                              POPOUT
+                  <div class="row">
+                      <div class="col s12">
+                          <!-- was col s12 m7 -->
+                          <div class="card blue-grey darken-1">
+                              <div class="card-content white-text">
+                                  <span class="card-title">
+                                      <span class="chart-title">
+                                          Multi-Waveform Display
+                                          <span id="sound-control">
+                                              <img class="mute-unmute" src="./assets/icon-unmuted-audio-50-wh.png" alt="Audio (Unmuted)">
+                                          </span>
+                                          <div id="multiWfsWindowPopout" class="right" style="cursor: pointer;">
+                                              POPOUT
+                                          </div>
+                                      </span>
+                                  </span>
+                                  <div id="divMultichart" class="flex-container"></div>
+                                  <div class="card-action">
+                                      <!--<a href="#">-->Double-click chart background to reset zoom<!--</a>-->
+                                  </div>
+                              </div>
                           </div>
-                      </span>
-                  </span>
-                  <div id="divMultichart" class="flex-container"></div>
-                  <div class="card-action">
-                    <!--<a href="#">-->Double-click chart background to reset zoom<!--</a>-->
+                      </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-        </div><!-- collapsible-body -->
-      </li><!-- collapsible li -->
-    </ul><!-- collapsible ul -->
-
-
-
-
-
-
-
-    <!-- .......................................... --><!--
+              </div><!-- collapsible-body -->
+          </li><!-- collapsible li -->
+      </ul><!-- collapsible ul -->
+      <!-- .......................................... -->
+      <!--
     ***********************************************
       CARD - Output console-like
     *********************************************** -->
-    <div id="divCardConsoleLike" class="row"><div class="col s12">
-        <div class="card blue-grey darken-1">
-          <div class="card-content white-text">
-            <span class="card-title">
-              <span class="output-title">Output</span>
-            </span>
-            <div id="output">
-              <pre class="preserve-whitespace pre-scrollable">
-                <span id="output">Output log</span>
+      <div id="divCardConsoleLike" class="row">
+          <div class="col s12">
+              <div class="card blue-grey darken-1">
+                  <div class="card-content white-text">
+                      <span class="card-title">
+                          <span class="output-title">Output</span>
+                      </span>
+                      <div id="output">
+                          <pre class="preserve-whitespace pre-scrollable">
+                          <span id="output">Output log</span>
               </pre>
-            </div>
-            <div class="card-action">
-              <a href="#">Link</a>
-            </div>
+                      </div>
+                      <div class="card-action">
+                          <a href="#">Link</a>
+                      </div>
+                  </div>
+              </div>
           </div>
-        </div>
-    </div></div>
+      </div>
 
 
 
