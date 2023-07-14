@@ -612,6 +612,75 @@ path {
   display: none;
 }
 
+.sidebar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto; /* Adjust the height as needed */
+  background-color: #f1f1f1; /* Adjust the background color as needed */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+  z-index: 9999;
+  border: 2px solid #ccc; /* Default border color */
+  border-radius: 5px;
+}
+
+.sidebar-button-background {
+  display: inline-block;
+  background-color: #b2bec3;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.sidebar-button-background:hover {
+  background-color: #74b9ff;
+}
+
+.sidebar-icon-settings {
+  display: block;
+  color: #0984e3;
+}
+
+.sidebar-icon-settings:hover {
+  color: #6c5ce7; /* Changes the icon color on hover */
+}
+
+#footer-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 20px;
+  display: none;
+  z-index: 999;
+}
+
+#footer-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#footer-button:hover {
+  background-color: #e0e0e0;
+}
+
+
+
+
 .button-footer {
   position: fixed;
   left: 0;
@@ -656,9 +725,32 @@ path {
 
 .footer-icon-settings:hover {
   color: #6c5ce7; /* Changes the icon color on hover */
-}cnpm statr
+}
+
+#footerToggle {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+
+#expandable-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+}
 
 main {
-  margin-bottom: 60px; /* Adjust the value as needed */
+  margin-bottom: 60px;
+}
+
+#serialPortSelectionAccordion {
+  display: none;
 }
 /* End: Chart */

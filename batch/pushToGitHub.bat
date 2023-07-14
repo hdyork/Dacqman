@@ -1,5 +1,6 @@
 @echo off
 cd /D "%~dp0"
+cd ..
 
 echo.
 echo Adding changes to the staging area...
