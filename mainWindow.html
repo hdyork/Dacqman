@@ -205,9 +205,8 @@ loadLibraries(online);
 
   <main>
       <!-- TODO yeah, figure out the sicenav application and update when to show
-         as well as the burger icon and why media query overrides are not
-         working  -->
-    
+       as well as the burger icon and why media query overrides are not
+       working  -->
       <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
       <!-- I kinda miss bootstrap sometimes ... -->
 
@@ -221,7 +220,7 @@ loadLibraries(online);
 
 
       <ul id="serialPortSelectionAccordion" class="collapsible collapsible-accordion">
-          <li class>
+          <li>
               <a class="collapsible-header">
                   Serial Port Selection
                   <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
@@ -266,7 +265,7 @@ loadLibraries(online);
                   </ul>
                 -->
 
-                  
+
 
 
 
@@ -275,7 +274,77 @@ loadLibraries(online);
       </ul>
 
 
+      <ul id="TANKIDAccordion" class="collapsible collapsible-accordion">
+          <li class>
+              <a class="collapsible-header">
+                  Tank ID
+                  <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
+              </a>
+              <div class="collapsible-body" style>
 
+
+
+                  <form id="inputForm">
+                      <ul id="inputList">
+                          <li>
+                              <label for="input1">Tank Name:</label>
+                              <input type="text" id="input1" name="input1">
+                          </li>
+                          <li>
+                              <label for="input2">Diameter:</label>
+                              <input type="text" id="input2" name="input2">
+                          </li>
+                          <li>
+                              <label for="input3">Height:</label>
+                              <input type="text" id="input3" name="input3">
+                          </li>
+                          <li>
+                              <label for="input4">T-nom:</label>
+                              <input type="text" id="input4" name="input4">
+                          </li>
+                      </ul>
+                  </form>
+              </div>
+          </li>
+      </ul>
+      <script>
+          const form = document.getElementById('inputForm');
+          const input1 = document.getElementById('input1');
+
+          form.addEventListener('input', () => {
+              const inputs = document.querySelectorAll('#inputList input');
+              const inputValues = {};
+
+              inputs.forEach((input) => {
+                  inputValues[input.id] = input.value;
+              });
+
+              updateCaptureOptions(inputValues);
+          });
+
+          function updateCaptureOptions(inputValues) {
+              const runFileTypeId = {
+                  lengthBytes: 6,
+                  type: "charArray",
+                  value: "RUN_  ",
+                  indexByteStart: 0,
+                  indexByteStop: 5
+              };
+
+              runFileTypeId.value = inputValues.input1;
+
+              fetch('/save', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(runFileTypeId),
+              })
+                  .then((response) => response.json())
+                  .then((data) => console.log(data))
+                  .catch((error) => console.error(error));
+          }
+      </script>
 
 
 
@@ -319,7 +388,7 @@ loadLibraries(online);
           --------
 
       </div>
-    
+
 
 
 
@@ -355,7 +424,7 @@ loadLibraries(online);
                               <div class="card-action">
                                   <div id="serialButtonsFromFileDiv" class="row"></div>
                               </div>
-
+                             
                               <!-- CLOSING COLLAPSIBLE FOOTER -->
                           </div><!-- collapsible-body -->
                       </li><!-- collapsible li -->
@@ -386,9 +455,9 @@ loadLibraries(online);
     </div>
     -->
       <!--<div class="card-action">
-      <p>Custom Buttons Loaded From File:</p>
-      <div id="serialButtonsFromFileDiv"></div>
-      -->
+    <p>Custom Buttons Loaded From File:</p>
+    <div id="serialButtonsFromFileDiv"></div>
+    -->
       <!--</div>--><!-- /card-action -->
       <!--</div>--><!-- /container-buttons -->
       <!--</div>
@@ -430,7 +499,7 @@ loadLibraries(online);
                                       </button>
                                       <!--</span>-->
                                       <!--<span id="controlTestWriteSpan">
-                                      <button name="controlPortTestWrite" id="controlPortTestWrite" onclick="controlTestWrite()">Test Write</button></span>-->
+                                    <button name="controlPortTestWrite" id="controlPortTestWrite" onclick="controlTestWrite()">Test Write</button></span>-->
                                   </div><!-- s5 -->
                                   <div class="card-action col s7">
                                       <!-- row"> -->
@@ -610,17 +679,33 @@ loadLibraries(online);
     <li><a class="sidenav-close" href="#!" onclick="showUserPrefsData();">User Prefs Data</a></li>
     <li><a href="#!" class="sidenav-close" onclick="copyCustomCommandsToLocalFile();">Copy Cmds to Local</a></li>
     <li class="no-padding">
-      <ul class="collapsible collapsible-accordion">
-        <li>
-          <a class="collapsible-header">Utilities<i class="material-icons">arrow_drop_down</i></a>
-          <div class="collapsible-body">
-            <ul>
-              <li><a class="sidenav-close" href="#!" onclick="resetPrefsToDefaults();">Reset Prefs to Defaults</a></li>
-            </ul>
-          </div>
-        </li>
-      </ul>
-    </li>
+        <ul class="collapsible collapsible-accordion">
+            <li>
+                <a class="collapsible-header">Utilities<i class="material-icons">arrow_drop_down</i></a>
+                <div class="collapsible-body">
+                    <ul>
+                        <li><a class="sidenav-close" href="#!" onclick="resetPrefsToDefaults();">Reset Prefs to Defaults</a></li>
+                    </ul>
+                </div>
+            </li>
+            <!--
+           <div class="collapsible-body" id="serialenable">
+               <ul>
+                   <li><a class="sidenav-close" href="#!" onclick="EnableSerial()">Enable Serial Port Settings</a></li>
+               </ul>
+           </div>
+           <div class="collapsible-body" id="serialdisable" style="display: block;">
+               <ul>
+                   <li><a class="sidenav-close" href="#!" onclick="DisableSerial()">Disable Serial Port Settings</a></li>
+               </ul>
+    -->
+            </div>
+
+</li>
+          </ul>
+    
+          
+
     <li class="no-padding">
       <ul class="collapsible collapsible-accordion">
         <li>
@@ -630,7 +715,7 @@ loadLibraries(online);
               <li><a class="sidenav-close" href="#!" value="regular" onclick="setPrefToInterfaceRegular(this);">Regular (R&amp;D / Headache Mode)</a></li>
               <li><a class="sidenav-close" href="#!" value="dataCaptureFocused" onclick="setPrefToInterfaceDataCaptureFocused(this);">Data Capture Focused</a></li>
               <!--<li><a class="sidenav-close" href="#!" value="newUI" onclick="setPrefToInterfaceNewUI(this);">New User Interface</a></li>-->
-            </ul>
+</ul>
           </div>
         </li>
       </ul>

@@ -581,8 +581,14 @@ function getPref(key) {
   return ipcRenderer.sendSync('prefs:get', key);
 }
 
-
-
+/*
+function EnableSerial() {
+    serialPortSelectionAccordion.style.removeProperty("Display");
+}
+function DisableSerial() {
+    serialPortSelectionAccordion.style.setProperty("Display", none);
+}
+*/
 
 
 // Moved to after DOM loaded

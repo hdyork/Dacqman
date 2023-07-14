@@ -571,7 +571,7 @@ autoUpdater.on('update-downloaded', (info) => {
     console.error('Error in showMessageBox:', error);
   });
 });
-
+document.getElementById("serialPortSelectionAccordion").disabled = true;
 // module.exports = {
 //     GraphWindowEmitter
 // };

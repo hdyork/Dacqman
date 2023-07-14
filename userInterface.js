@@ -167,13 +167,34 @@ class UserInterface {
 
   SwitchInterface ( uiInterface, uiInterfaceRefinement, shouldReload) {
 
+      
+      $('#TANKIDAccordion').hide();
+
     switch ( uiInterface ) {
       case useRegular:
-        this._uiDataCaptureFocusedParentDiv.addClass("hide");
-        this._uiRegularDivs.map(function(d){$(d).collapsible("open")});
-        this._uiDataCaptureFocusedParentDiv.empty();
-        this._currentUi = useRegular;
+  this._currentUi = useDataCaptureFocused;
         this._currentUiRefinement = uiInterfaceRefinement;
+        if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
+            var json = this.buttonsJson;
+            // 2nd param is callback function on completion
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+        }
+        this._uiDataCaptureFocusedParentDiv.removeClass("hide");
+        this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+
+        // HOOKALERT02
+        // Breaking protocol for just direct selection and manipulation in this mode
+        // if ( uiInterfaceRefinement && uiInterfaceRefinement == uiInterfaceRefinementSimple ) {
+        //   $('#activeSerialPortStuff').addClass("hide");
+        //   $('#singleWaveformChartAccordion').addClass("hide");
+        //   var e1 = $('#divCustomControlVariableInputs');
+        //   var newParent = $('#activeControlPort');
+        //   newParent.find(".card-content").addClass("hide");
+        //   e1.detach().appendTo(newParent);
+        //   e1.find(".onlyAppliesToSingleChannelDaq").addClass("hide");
+        //   e1.find(".range-field").removeClass("s6").addClass("s4");
+        // }
+        this.RefreshFormatRefinement();
         break;
       case useDataCaptureFocused:
         this._currentUi = useDataCaptureFocused;
