@@ -1507,7 +1507,7 @@ var controlPortOpen = function() {
 
 
 
-var serialCheckbox = function (checkbox) {
+var serialCheckbox = function (checkbox, animStarted) {
 
   // Uncheck all other checkboxes in this column
   // Function can be called without a param like serialCheckbox();
@@ -1576,7 +1576,6 @@ var serialCheckbox = function (checkbox) {
       .css( "line-height", "18px" )
       .css( "pointer-events", "none")       // Make it act like a disabled button
       .text("Ports couldn't be auto-selected. If you see them listed, you can select them manually... Or Plug-In/Re-Plug and Reload?");
-  
   }
 
 } // end of: serialCheckbox
@@ -1788,6 +1787,14 @@ function beginSerialComms(button) {
 
   // Then collapse the selection window ...
   $("#serialPortSelectionAccordion").collapsible('close'); //.children('li:first-child'));
+  
+  // Friday test two
+  // console.log("Is animStarted" + animStarted)
+  // animStarted = true;
+  // console.log("Is animStarted" + animStarted)
+
+  // Friday test three
+  // mainWindowUpdateChartData(null);
 
   // Enable anything else if/as needed, esp. in the UI/UX - here, the selected interface
   // including potentially the data-capture-focused UI/UX

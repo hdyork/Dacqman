@@ -1246,6 +1246,11 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
 
   setupMultipaneCharts($("#divMultichart"), numChans);
 
+  // Friday test one
+  // console.log("Is animStarted" + animStarted)
+  // animStarted = true;
+  // console.log("Is animStarted" + animStarted)
+
   // TODO extract the urls and texts
   // TODO extract the setting / changing img functions / strings
   $('#sound-control').click( function(e) {

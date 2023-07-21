@@ -43,6 +43,25 @@ if ( !fs.existsSync(libPath) ) {
   console.log("Child: LibPresent = true")
 }
 
+var material = 0.233; // Default value for Stainless Steel
+
+// Listen for the custom event from the first HTML file
+document.addEventListener('selectedOption', function (event) {
+    // Update the global variable based on the selected option received from the event
+    switch (event.detail) {
+        case 'Stainless Steel':
+            material = 0.226;
+            break;
+        case 'Carbon Steel':
+            material = 0.233;
+            break;
+        
+    }
+
+    
+  
+});
+
 if ( libPresent ) {
   var processWf = edge.func({                               // Original def
     // <PLUGIN MOD>
@@ -127,7 +146,7 @@ var processWaveform = function(ch) {
       data: current_wf[ch],
       fsample: sampleF,
       algo_props: algos["xd" + ch.toString()],
-      cal_wf: cals["xd" + ch.toString()]
+      cal_wf: cals["xd" + ch.toString()],
     };
   // <DEMO MOD>
   } else {                                          
@@ -136,7 +155,7 @@ var processWaveform = function(ch) {
       fsample: 40,
       algo_props: "algo_props",
       cal_wf: "cal_wf",
-      ch: current_ch
+      ch: current_ch,
     }
     console.log(JSON.stringify(params));
   }
