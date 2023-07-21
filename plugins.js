@@ -39,7 +39,7 @@ var pluginPushInit = function(data) {
 // after-packaging added plugin files
 // so if app.asar is in the path name (packaged only) it should be replaced - and then 
 // during dev the replace should do nothing
-var plugDirPath = path.join(__dirname, "plugins").replace('app.asar', 'app.asar.unpacked'); 
+var plugDirPath = path.join(__dirname, "plugins").replace('app.asar.unpacked'); 
 if ( fs.existsSync(plugDirPath)) {
     var pluginFns = fs.readdirSync(plugDirPath);
     console.log("plugins: ", pluginFns);
