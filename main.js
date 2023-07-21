@@ -552,7 +552,6 @@ if(process.env.NODE_ENV !== 'production'){
     ]
   });
 }
-
 autoUpdater.on('update-downloaded', (info) => {
   dialog.showMessageBox({
     type: 'info',

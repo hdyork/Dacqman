@@ -38,154 +38,104 @@
 
   <script>
 
-    // Checks if connected to internet and selects which library source to import from
+    // Checks if connected to internet and selects which library source to import From
   function loadLibraries(online) {
-  var libraries = [];
-
-  
-  // Load libraries from the internet
-  if (online) {
-    libraries = [
+    var libraries = [
+      // Load jQuery first
+      {
+        src: online ? 'https://code.jquery.com/jquery-3.3.1.min.js' : 'js/jquery-3.3.1.min.js',
+        integrity: online ? 'sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' : undefined,
+        crossOrigin: online ? 'anonymous' : undefined
+      },
       // UI allows such things as color transitions, though these are available through other routes as well
       {
-        src: 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js',
-        integrity: 'sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=',
-        crossOrigin: 'anonymous'
+        src: online ? 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js' : 'js/jquery-ui.min.js',
+        integrity: online ? 'sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=' : undefined,
+        crossOrigin: online ? 'anonymous' : undefined
       },
       // Materialize
-      // Materialize CDNs
       // Compiled and minified CSS
       {
         rel: 'stylesheet',
-        href: 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css'
+        href: online ? 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css' : 'assets/css/materialize.min.css'
       },
       // Import Google Icon Font
       {
-        href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
+        href: online ? 'https://fonts.googleapis.com/icon?family=Material+Icons' : 'assets/css/material-icons.css',
         rel: 'stylesheet',
         type: 'text/css'
       },
       // Compiled and minified JavaScript
       {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js'
+        src: online ? 'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js' : 'js/materialize.min.js'
       },
-      // End Materialize
-      // End Materialize
-      // Plotting / Charting / Data Visualization
-      // v3 to keep the refs to d3.scale.linear()
-      // v5 will start using eg d3.scaleLinear
-      // Previously using v3        d3.v4.min.js
+      // d3 for plotting / charting / data visualization
       {
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js'
-      }
+        src: online ? 'https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js' : 'js/d3.min.js'
+      },
     ];
-  } else {
-    libraries = [
-      // UI allows such things as color transitions, though these are available through other routes as well
-      {
-        src: 'js/jquery-ui.min.js'
-      },
-      // Materialize
-      // Materialize CDNs
-      // Compiled and minified CSS
-      {
-        rel: 'stylesheet',
-        href: 'assets/css/materialize.min.css'
-      },
-      // Import Google Icon Font
-      {
-        href: 'assets/css/material-icons.css',
-        rel: 'stylesheet',
-        type: 'text/css'
-      },
-      // Compiled and minified JavaScript
-      {
-        src: 'js/materialize.min.js'
-      },
-      // End Materialize
-      // Plotting / Charting / Data Visualization
-      // v3 to keep the refs to d3.scale.linear()
-      // v5 will start using eg d3.scaleLinear
-      // Previously using v3        d3.v4.min.js
-      {
-        src: 'js/d3.min.js'
+
+    function loadLibrary(library, callback) {
+      if (library.src) {
+        var script = document.createElement('script');
+        script.src = library.src;
+        if (library.integrity && library.crossOrigin) {
+          script.integrity = library.integrity;
+          script.crossOrigin = library.crossOrigin;
+        }
+        script.onload = callback;
+        document.head.appendChild(script);
+      } else if (library.href) {
+        var link = document.createElement('link');
+        link.href = library.href;
+        link.rel = library.rel;
+        link.onload = callback;
+        document.head.appendChild(link);
       }
-    ];
-  }
-
-  var numLoaded = 0;
-
-  // Tracks number of loaded libraries and exits load function
-  function libraryLoaded() {
-    numLoaded++;
-    if (numLoaded === libraries.length) {
-      initializeApplication();
     }
-  }
 
-  function loadLibrary(library, callback) {
-    if (library.src) {
-      var script = document.createElement('script');
-      script.src = library.src;
-      if (library.integrity && library.crossOrigin) {
-        script.integrity = library.integrity;
-        script.crossOrigin = library.crossOrigin;
+    function loadNextLibrary(index) {
+      if (index < libraries.length) {
+        loadLibrary(libraries[index], function() {
+          loadNextLibrary(index + 1);
+        });
+      } else {
+        initializeApplication();
       }
-      script.onload = callback;
-      document.head.appendChild(script);
-    } else if (library.href) {
-      var link = document.createElement('link');
-      link.href = library.href;
-      link.rel = library.rel;
-      link.onload = callback;
-      document.head.appendChild(link);
     }
+
+    loadNextLibrary(0);
   }
 
-    // Load jQuery first
-    var jQueryLibrary = {
-    src: online ? 'https://code.jquery.com/jquery-3.3.1.min.js' : 'js/jquery-3.3.1.min.js',
-    integrity: online ? 'sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' : undefined,
-    crossOrigin: online ? 'anonymous' : undefined
-  };
+  function initializeApplication() {
+    // Let the browser know the website is optimized for mobile
+    var metaViewport = document.createElement('meta');
+    metaViewport.name = 'viewport';
+    metaViewport.content = 'width=device-width, initial-scale=1.0';
+    document.head.appendChild(metaViewport);
 
-  loadLibrary(jQueryLibrary, function() {
-    // After jQuery has loaded, load the rest of the libraries
-    for (var i = 0; i < libraries.length; i++) {
-      loadLibrary(libraries[i], libraryLoaded);
-    }
-  });
-}
+    // Include custom CSS file
+    var customCSSLink = document.createElement('link');
+    customCSSLink.rel = 'stylesheet';
+    customCSSLink.href = 'css/parent-custom.css';
+    customCSSLink.id = 'stylesheet';
+    document.head.appendChild(customCSSLink);
 
-function initializeApplication() {
-  // Let the browser know the website is optimized for mobile
-  var metaViewport = document.createElement('meta');
-  metaViewport.name = 'viewport';
-  metaViewport.content = 'width=device-width, initial-scale=1.0';
-  document.head.appendChild(metaViewport);
+    // Include the main script file
+    var mainWindowScript = document.createElement('script');
+    mainWindowScript.src = 'mainWindow.js';
+    mainWindowScript.type = 'text/javascript';
+    document.head.appendChild(mainWindowScript);
 
-  // Include custom CSS file
-  var customCSSLink = document.createElement('link');
-  customCSSLink.rel = 'stylesheet';
-  customCSSLink.href = 'css/parent-custom.css';
-  customCSSLink.id = 'stylesheet';
-  document.head.appendChild(customCSSLink);
+    // Allow same code for Electron app and browser-based implementations
+    var preScript = document.createElement('script');
+    preScript.innerText = 'if (window.module) module = window.module;';
+    document.head.appendChild(preScript);
+  }
 
-  // Include the main script file
-  var mainWindowScript = document.createElement('script');
-  mainWindowScript.src = 'mainWindow.js';
-  mainWindowScript.type = 'text/javascript';
-  document.head.appendChild(mainWindowScript);
-
-  // Allow same code for Electron app and browser-based implementations
-  var preScript = document.createElement('script');
-  preScript.innerText = 'if (window.module) module = window.module;';
-  document.head.appendChild(preScript);
-}
-
-// Conditional code execution based on internet connection status
-var online = checkInternetConnection();
-loadLibraries(online);
+  // Conditional code execution based on internet connection status
+  var online = checkInternetConnection();
+  loadLibraries(online);
 
 </script>
 </head>
@@ -202,7 +152,6 @@ loadLibraries(online);
           MAIN
   ******************************************************************************
   -->
-
   <main>
       <!-- TODO yeah, figure out the sicenav application and update when to show
          as well as the burger icon and why media query overrides are not
@@ -221,7 +170,7 @@ loadLibraries(online);
 
 
       <ul id="serialPortSelectionAccordion" class="collapsible collapsible-accordion">
-          <li class>
+          <li class="active">
               <a class="collapsible-header">
                   Serial Port Selection
                   <i class="material-icons medium sidenav-dd-expand">play_arrow</i>
@@ -309,8 +258,27 @@ loadLibraries(online);
 
 
 
-      <!-- OPTION? Place into card or section, etc.-->
+       <!--
+       ******************************************************************************
+          Data Capture UI Div
+       ******************************************************************************
+       -->
       <div id="capture_ui" class="hide">
+          <!-- row"> -->
+          <!-- Please see:
+              - userInterfaceDataCaptureFocused.html
+              - userInterface.js
+        -->
+          --------
+
+      </div>
+
+      <!--
+       ******************************************************************************
+          New UI Div
+       ******************************************************************************
+       -->
+      <div id="new_ui" class="hide">
           <!-- row"> -->
           <!-- Please see:
               - userInterfaceDataCaptureFocused.html
@@ -520,6 +488,7 @@ loadLibraries(online);
     ***********************************************
       CARD - Multipane-Chart
     *********************************************** -->
+    
       <ul id="multiWaveformChartAccordion" class="collapsible collapsible-accordion">
           <li class="active">
               <a class="collapsible-header">
@@ -584,8 +553,6 @@ loadLibraries(online);
 
 
 
-
-
   </main><!-- main -->
 
 <!-- end container div ? -->
@@ -616,20 +583,21 @@ loadLibraries(online);
           <div class="collapsible-body">
             <ul>
               <li><a class="sidenav-close" href="#!" onclick="resetPrefsToDefaults();">Reset Prefs to Defaults</a></li>
+              <li><a id="serialPortSelectionToggle" class="sidenav-close" href="#!" onclick="toggleSerialPortSelectionAccordionVisibility();">Show Serial Port Selection Accordion</a></li>
             </ul>
           </div>
         </li>
       </ul>
     </li>
-    <li class="no-padding">
+    <li id="interfaceOptions" class="no-padding">
       <ul class="collapsible collapsible-accordion">
         <li>
           <a class="collapsible-header">Interface<i class="material-icons">arrow_drop_down</i></a>
           <div class="collapsible-body">
             <ul>
-              <li><a class="sidenav-close" href="#!" value="regular" onclick="setPrefToInterfaceRegular(this);">Regular (R&amp;D / Headache Mode)</a></li>
+              <li><a id="regularUIButton" class="sidenav-close" href="#!" value="regular" onclick="setPrefToInterfaceRegular(this);">Regular (R&amp;D / Headache Mode)</a></li>
               <li><a class="sidenav-close" href="#!" value="dataCaptureFocused" onclick="setPrefToInterfaceDataCaptureFocused(this);">Data Capture Focused</a></li>
-              <!--<li><a class="sidenav-close" href="#!" value="newUI" onclick="setPrefToInterfaceNewUI(this);">New User Interface</a></li>-->
+              <li><a id="newUIButton" class="sidenav-close" href="#!" value="newUI" onclick="setPrefToInterfaceNewUI(this);">New User Interface</a></li>
             </ul>
           </div>
         </li>
@@ -650,33 +618,36 @@ loadLibraries(online);
     </li>
   </ul>
 
-  <!--
+
+
+<!--
   ******************************************************************************
-          FOOTER
+          SIDEBAR
   ******************************************************************************
   -->
-<div class="button-footer">
 
-  <a href="#" data-target="slide-out" class="sidenav-trigger" title="Open Settings"> 
-    <span class = "settings-button-background">
-     <i class="material-icons footer-icon-settings">settings</i>
-    </span>
-  </a>
+  <div class="sidebar hide">
+    <a href="#" data-target="slide-out" class="sidenav-trigger" title="Open Settings">
+      <span class="sidebar-button-background">
+        <i class="material-icons sidebar-icon-settings">settings</i>
+      </span>
+    </a>
+    <a href="#" class="reload-button" onclick="location.reload()" title="Reload Application">
+      <span class="sidebar-button-background">
+        <i class="material-icons sidebar-icon-settings">refresh</i>
+      </span>
+    </a>
+  </div>
 
-  <a href="#" class="reload-button" onclick="location.reload()" title="Reload Application">
-    <span class="reload-button-background">
-      <i class="material-icons footer-icon-settings">refresh</i>
-    </span>
-  </a>
+  
 
-</div>
+<!-- The button stays outside and is fixed at the bottom 
+<button id="footerToggle" class="btn">Toggle Footer</button>
 
-
-
-
-
-
-
+<div class="expandable-footer">
+        <p> Test </p>
+    </div>
+-->
 
   <!--
   ******************************************************************************

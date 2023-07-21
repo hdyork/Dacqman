@@ -581,6 +581,28 @@ function getPref(key) {
   return ipcRenderer.sendSync('prefs:get', key);
 }
 
+function toggleSerialPortSelectionAccordionVisibility() {
+  
+  var accordion = document.querySelector('#serialPortSelectionAccordion');
+
+  // Select the toggle button
+  var toggleButton = document.querySelector('#serialPortSelectionToggle');
+
+  // Check if the accordion is currently visible
+  if (window.getComputedStyle(accordion).display === 'none') {
+    // If it's not visible, make it visible
+    accordion.style.display = 'block';
+
+    // And change the button text to "Hide Accordion"
+    toggleButton.textContent = 'Hide Serial Port Selection Accordion';
+  } else {
+    // If it's visible, hide it
+    accordion.style.display = 'none';
+
+    // And change the button text to "Show Accordion"
+    toggleButton.textContent = 'Show Serial Port Selection Accordion';
+  }
+}
 
 
 
@@ -1152,32 +1174,50 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
       // });
 
 
-      YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
-      if ( prefs.boolUsePlugins ) {
+      if (prefs.newInterface) {
+        YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiNewUI);
+      } else {
+        YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
+      }
+      
+      if (prefs.boolUsePlugins) {
         plugins = require('./plugins.js');
       } else {
         console.warn("prefs.boolUsePlugins = false; Skipping require (and load) plugins.");
       }
+      
       restoreCollapsibleStates(prefs);
-
+      
       // Selected collapsibles, remember collapsible states
       $('#singleWaveformChartAccordion').collapsible({
         onOpenEnd: function(ele) { storeUserCollapsibleState(ele); },
         onCloseEnd: function(ele) { storeUserCollapsibleState(ele); }
       });
+      
       $('#controlPortButtonsFromFileDiv').find('.collapsible').collapsible({
         onOpenEnd: function(ele) { storeUserCollapsibleState(ele); },
         onCloseEnd: function(ele) { storeUserCollapsibleState(ele); }
       });
-
+      
       // For a little speed (hopefully?) store the state of the collapsible 
       // for multigraphs chart updates so not query needed each time?
       $('#multiWaveformChartAccordion.collapsible').collapsible({
         onOpenEnd: function(ele) { mainWindowMultiWfChartAccordionIsOpen = true; },
         onCloseEnd: function(ele) { mainWindowMultiWfChartAccordionIsOpen = false; }
       });
+      
+      // If new interface is active, remember state for new accordion items
+      if (prefs.newInterface) {
+        $('#newAccordionItem1').collapsible({
+          onOpenEnd: function(ele) { storeUserCollapsibleState(ele); },
+          onCloseEnd: function(ele) { storeUserCollapsibleState(ele); }
+        });
+      
+        // Continue for other new accordion items
+      }
 
       return;
+
     })
     .catch ( e => {
       console.error("Error loading prefs and customCommandsJson from file: " + JSON.stringify(e));
@@ -1205,6 +1245,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
 
 
   setupMultipaneCharts($("#divMultichart"), numChans);
+
 
   // TODO extract the urls and texts
   // TODO extract the setting / changing img functions / strings
@@ -1299,7 +1340,16 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
   //   onClose: function(ele) { storeUserCollapsibleState(ele); }
   // });
 
-  
+  $('#footerToggle').click(function(){
+    if($('.expandable-footer').height() == 0){
+        $('.expandable-footer').height('200px'); // Change '200px' to the height of your footer
+        $('#footerToggle').css('bottom', '200px'); // Adjust button position to the height of the footer
+    }
+    else{
+        $('.expandable-footer').height('0');
+        $('#footerToggle').css('bottom', '0');
+    }
+});
 
 }); // end of $(document).ready(...{...})
 // END OF DOCUMENT.READY(...)
@@ -1311,7 +1361,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
 var restoreCollapsibleStates = function(_prefs) {
 
   if ( !_prefs ) { return; }
-
+  console.log('Loaded prefs:', prefs);
   var pcc = prefs.collapsedCollapsibles;
   var poc = prefs.openedCollapsibles;
   if ( !pcc ) { pcc = []; }
@@ -1323,6 +1373,10 @@ var restoreCollapsibleStates = function(_prefs) {
     // and the parent of that is the ul with the .collapsible 
     // which can be supplied to the M.Collapsible.getInstance for example
     var theUl = $(`#${c}`).parent().parent()[0];
+    if (!theUl) {
+      console.warn(`Element with id ${c} does not exist in the document`);
+      return; // Skip this iteration of the loop
+    }
     if ( !M.Collapsible.getInstance(theUl) ) {
       console.warn(`${c} div id name parent parent [0] for collapsible state restore is not a collapsible in this view`);
     }

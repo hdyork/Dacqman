@@ -20,6 +20,8 @@ const {ipcRenderer } = electron;
 const useRegular = 'regular';
 const useDataCaptureFocused = 'dataCaptureFocused';
 const uiDataCaptureFocusedHtmlSnippetFilepath = "./userInterfaceDataCaptureFocused.html";
+const useNewUI = "newUI";
+const uiNewUIHtmlSnippetFilepath = "./userInterfaceNewUI.html";
 const uiInterfaceRefinementSimple = 'simple';
 
 
@@ -36,8 +38,10 @@ class UserInterface {
   constructor ({
 
     // default constructor parameters/properties
-    uiRegularDivs = ['#singleWaveformChartAccordion', '#multiWaveformChartAccordion'],
-    uiDataCaptureFocusedParentDiv = '#capture_ui'
+    uiRegularDivs = ['#singleWaveformChartAccordion', '#multiWaveformChartAccordion', '#divCardConsoleLike'],
+    uiDataCaptureFocusedParentDiv = '#capture_ui',
+    uiOldUIDiv = '#oldUIDiv',
+    uiNewUIDiv = '#new_ui'
 
   } = {}) {
 
@@ -47,6 +51,8 @@ class UserInterface {
     // publicly or privately
     this._uiRegularDivs = uiRegularDivs;
     this._uiDataCaptureFocusedParentDiv = $(uiDataCaptureFocusedParentDiv);
+    this._uiOldUIDiv = uiOldUIDiv;
+    this._uiNewUIDiv = $(uiNewUIDiv);
 
     // Not constructed:
     this._captureDataFileOutputDirectory = null;
@@ -162,20 +168,24 @@ class UserInterface {
 
 
 
-
-
-
   SwitchInterface ( uiInterface, uiInterfaceRefinement, shouldReload) {
-
+    $("#newUIButton").hide();
+    $("#interfaceOptions").hide();
+    $("#activeSerialPortStuff").hide();
+    $("#singleWaveformChartAccordion").hide();
+    $("#divCardConsoleLike").hide();
+    
     switch ( uiInterface ) {
       case useRegular:
-        this._uiDataCaptureFocusedParentDiv.addClass("hide");
-        this._uiRegularDivs.map(function(d){$(d).collapsible("open")});
-        this._uiDataCaptureFocusedParentDiv.empty();
-        this._currentUi = useRegular;
-        this._currentUiRefinement = uiInterfaceRefinement;
-        break;
-      case useDataCaptureFocused:
+        // $(".sidebar").removeClass("hide");
+        // this._uiDataCaptureFocusedParentDiv.addClass("hide");
+        // this._uiRegularDivs.map(function(d){$(d).collapsible("open")});
+        // this._uiDataCaptureFocusedParentDiv.empty();
+        // //$("#serialPortSelectionAccordion").hide();
+        // this._currentUi = useRegular;
+        // this._currentUiRefinement = uiInterfaceRefinement;
+        
+        $(".sidebar").removeClass("hide");
         this._currentUi = useDataCaptureFocused;
         this._currentUiRefinement = uiInterfaceRefinement;
         if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
@@ -184,7 +194,38 @@ class UserInterface {
             this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
         }
         this._uiDataCaptureFocusedParentDiv.removeClass("hide");
-        this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+        //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+
+        //$("#serialPortSelectionAccordion").hide();
+
+        // HOOKALERT02
+        // Breaking protocol for just direct selection and manipulation in this mode
+        // if ( uiInterfaceRefinement && uiInterfaceRefinement == uiInterfaceRefinementSimple ) {
+        //   $('#activeSerialPortStuff').addClass("hide");
+        //   $('#singleWaveformChartAccordion').addClass("hide");
+        //   var e1 = $('#divCustomControlVariableInputs');
+        //   var newParent = $('#activeControlPort');
+        //   newParent.find(".card-content").addClass("hide");
+        //   e1.detach().appendTo(newParent);
+        //   e1.find(".onlyAppliesToSingleChannelDaq").addClass("hide");
+        //   e1.find(".range-field").removeClass("s6").addClass("s4");
+        // }
+        this.RefreshFormatRefinement();
+
+        break;
+      case useDataCaptureFocused:
+        $(".sidebar").removeClass("hide");
+        this._currentUi = useDataCaptureFocused;
+        this._currentUiRefinement = uiInterfaceRefinement;
+        if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
+            var json = this.buttonsJson;
+            // 2nd param is callback function on completion
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+        }
+        this._uiDataCaptureFocusedParentDiv.removeClass("hide");
+        //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+
+        //$("#serialPortSelectionAccordion").hide();
 
         // HOOKALERT02
         // Breaking protocol for just direct selection and manipulation in this mode
@@ -200,19 +241,26 @@ class UserInterface {
         // }
         this.RefreshFormatRefinement();
         break;
-      case useNewUI:
-          console.log("Switching to New User Interface");
+        case useNewUI:
+          $(".sidebar").removeClass("hide");
+            this._uiDataCaptureFocusedParentDiv.addClass("hide");
+            this._uiDataCaptureFocusedParentDiv.empty();
+            this._uiRegularDivs.map(function(d){$(d).addClass("hide")});
+            $("#divCardConsoleLike").hide();
+            $("#serialPortSelectionAccordion").hide();
+            $("#activeSerialPortStuff").hide();
+            $("#expandable-footer").show(); // show the footer
+            $("#footerToggle").show(); // show the footer toggle button
+            this._currentUi = useRegular;
+            this._currentUiRefinement = uiInterfaceRefinement;
+            if ( this._uiNewUIDiv.children("div").length < 1 ) {
+              var json = this.buttonsJson;
+              // 2nd param is callback function on completion
+              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+          }
+          this._uiNewUIParentDiv.removeClass("hide");
+          break;
 
-          // Add your UI-switching code here...
-          // You will likely need to hide/show different elements,
-          // load different content, etc. For example:
-          // this._uiNewUiDivs.map(function(d){$(d).collapsible("open")});
-          // this._uiDataCaptureFocusedParentDiv.addClass("hide");
-          // this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
-
-          this._currentUi = useNewUI;
-          this._currentUiRefinement = uiInterfaceRefinement;
-        break;
 
       default:
         console.log(`uiInterface case: ${uiInterface} not handled.`);
@@ -433,6 +481,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
           if ( jb.mapToButtonId === 'btnCaptureStart' ) {
             $('#btnCaptureStop').removeClass("disabled");
+            $('#btnCapturePause').removeClass("disabled");
             $('#btnCaptureStart').addClass("disabled");
             $('#structureIdInfo').prop('disabled', true);
 
