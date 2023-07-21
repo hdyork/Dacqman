@@ -170,15 +170,48 @@ class UserInterface {
 
   SwitchInterface ( uiInterface, uiInterfaceRefinement, shouldReload) {
     $("#newUIButton").hide();
+    $("#interfaceOptions").hide();
+    $("#activeSerialPortStuff").hide();
+    $("#singleWaveformChartAccordion").hide();
+    $("#divCardConsoleLike").hide();
+    
     switch ( uiInterface ) {
       case useRegular:
+        // $(".sidebar").removeClass("hide");
+        // this._uiDataCaptureFocusedParentDiv.addClass("hide");
+        // this._uiRegularDivs.map(function(d){$(d).collapsible("open")});
+        // this._uiDataCaptureFocusedParentDiv.empty();
+        // //$("#serialPortSelectionAccordion").hide();
+        // this._currentUi = useRegular;
+        // this._currentUiRefinement = uiInterfaceRefinement;
+        
         $(".sidebar").removeClass("hide");
-        this._uiDataCaptureFocusedParentDiv.addClass("hide");
-        this._uiRegularDivs.map(function(d){$(d).collapsible("open")});
-        this._uiDataCaptureFocusedParentDiv.empty();
-        //$("#serialPortSelectionAccordion").hide();
-        this._currentUi = useRegular;
+        this._currentUi = useDataCaptureFocused;
         this._currentUiRefinement = uiInterfaceRefinement;
+        if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
+            var json = this.buttonsJson;
+            // 2nd param is callback function on completion
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+        }
+        this._uiDataCaptureFocusedParentDiv.removeClass("hide");
+        //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+
+        //$("#serialPortSelectionAccordion").hide();
+
+        // HOOKALERT02
+        // Breaking protocol for just direct selection and manipulation in this mode
+        // if ( uiInterfaceRefinement && uiInterfaceRefinement == uiInterfaceRefinementSimple ) {
+        //   $('#activeSerialPortStuff').addClass("hide");
+        //   $('#singleWaveformChartAccordion').addClass("hide");
+        //   var e1 = $('#divCustomControlVariableInputs');
+        //   var newParent = $('#activeControlPort');
+        //   newParent.find(".card-content").addClass("hide");
+        //   e1.detach().appendTo(newParent);
+        //   e1.find(".onlyAppliesToSingleChannelDaq").addClass("hide");
+        //   e1.find(".range-field").removeClass("s6").addClass("s4");
+        // }
+        this.RefreshFormatRefinement();
+
         break;
       case useDataCaptureFocused:
         $(".sidebar").removeClass("hide");
@@ -448,6 +481,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
           if ( jb.mapToButtonId === 'btnCaptureStart' ) {
             $('#btnCaptureStop').removeClass("disabled");
+            $('#btnCapturePause').removeClass("disabled");
             $('#btnCaptureStart').addClass("disabled");
             $('#structureIdInfo').prop('disabled', true);
 

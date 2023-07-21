@@ -93,12 +93,11 @@ class ProcessWaveform {
       // });
 
       this.Init = () => {
-        console.log(`Init: ${__filename}: ${optionsPath} ${childWrapperPath}`);
+        //console.log(`Init: ${__filename}: ${optionsPath} ${childWrapperPath}`);
         //this.wf_child = fork('./plugins/waveformProcessingChild-nogit.js', [processingOptionsFile, numChannels]);
-        this.wf_child = fork(
-          childWrapperPath,
+        this.wf_child = fork(childWrapperPath,
           [this.processingOptionsFile, this.numChannels],
-          { silent: true} // DEMO ADD - this allows stdio pipe between parent-child for console output to show in UI - see child comments
+           // DEMO ADD - this allows stdio pipe between parent-child for console output to show in UI - see child comments
         );
         this.wf_child.on('message', (msg) => {
           // the child process should be sending new thicknes values as a hash: "Channel", "Thickness", "Rms"
@@ -123,17 +122,24 @@ class ProcessWaveform {
             wf_data: wf_data
           };
           //console.log(params);
+           
+          //console.log(`Init: ${__filename}: ${optionsPath} ${childWrapperPath}`);
+          
+     
           if ( this.wf_child ) { // PLUGIN TEMP MOD: Since start on construction in testing and we need Init first
             this.wf_child.send(params);
           }
         }
       }
 
-      this.UpdateThickness = function(val) {
-        console.log("UpdateThickness, thickness element: " + this.thicknessElementName);
-        console.log(val);
-        $('#' + this.thicknessElementName + (val.Channel - 1).toString()).text("THK: "+ val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
-        $('#' + this.thicknessElementName).text("THK: "+ val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
+      this.UpdateThickness = function (val) {
+          if (val.Thickness > 0 && val.Rms > 0)
+          {
+              console.log("UpdateThickness, thickness element: " + this.thicknessElementName);
+              console.log("val: " + JSON.stringify(val));
+              $('#' + this.thicknessElementName + (val.Channel - 1).toString()).text("THK: " + val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
+              $('#' + this.thicknessElementName).text("THK: " + val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
+          }
       }
 
       this.Start = function() {

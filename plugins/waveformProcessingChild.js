@@ -127,7 +127,8 @@ var processWaveform = function(ch) {
       data: current_wf[ch],
       fsample: sampleF,
       algo_props: algos["xd" + ch.toString()],
-      cal_wf: cals["xd" + ch.toString()]
+      cal_wf: cals["xd" + ch.toString()],
+      sos_steel:0.005
     };
   // <DEMO MOD>
   } else {                                          
@@ -136,7 +137,7 @@ var processWaveform = function(ch) {
       fsample: 40,
       algo_props: "algo_props",
       cal_wf: "cal_wf",
-      ch: current_ch
+      ch: current_ch,
     }
     console.log(JSON.stringify(params));
   }

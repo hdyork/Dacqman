@@ -237,12 +237,13 @@ input#structureIdInfo {
   height: 1.5em;
   margin-bottom: 0;
 }
-/* */
+
 span#filesWrittenBadge.badge {
   height: 18px;
   line-height: 18px;
   margin-top: 3px;
 }
+
 
 #capture_ui_buttons button.tempUiBigButtonSmallText {
   font-size: 1.5em;
@@ -254,11 +255,53 @@ span#filesWrittenBadge.badge {
   height: 80px;
   font-size: 4em;
   margin: 6px;
-  /*background-image: url('../assets/eagle-bear.jpg');*/ /* for fun */
 }
 /*#capture_ui_buttons .green {
   opacity: 0.5;
 }*/
+/*#capture_ui_buttons {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5em;
+  line-height: 1.1;
+}
+
+#capture_ui_buttons button {
+  flex: 1;
+  height: 80px;
+  font-size: 2.5em;
+  margin: 6px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}*/
+#btnCaptureStart:hover{
+  background-color: #55efc4;
+  color: white;
+}
+
+#btnCapturePause:hover{
+  background-color: #f39c12;
+  color: white;
+}
+
+#btnCaptureStop:hover{
+  background-color: #ff7675;
+  color: white;
+}
+
+#btnCaptureStart{
+  background-color: #00b894;
+}
+
+#btnCapturePause{
+  background-color: #f1c40f;
+}
+
+#btnCaptureStop{
+  background-color: #d63031;
+}
 #capture_ui_current_filename.row {
   margin: 6px;
   font-size: 1.2em;
