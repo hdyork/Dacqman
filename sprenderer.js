@@ -1584,7 +1584,13 @@ var serialCheckbox = function (checkbox, animStarted) {
 
 // Already included above:
 //const fs = require('fs');
-const hardwareOptions = require("./user-data/hardwares.json").hardwares;
+
+const path = require('path');
+const hardwareOptions = require(path.join(process.resourcesPath, 'extraResources', 'user-data', 'hardwares.json')).hardwares;
+
+
+
+console.log(hardwareOptions);
 var hwTxt = "Undetermined"; // TOOD this is probably the wrong place for this - probably a hardware class would be good right?
 var hw;
 

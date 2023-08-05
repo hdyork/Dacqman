@@ -1,0 +1,226 @@
+{
+
+  "headerData" : {
+
+    "runFileTypeId" : {
+      "lengthBytes" : 6,
+      "type" : "charArray",
+      "value" : "RUN_  ",
+      "indexByteStart" : 0,
+      "indexByteStop" : 5
+    },
+
+    "legacyHeaderLengthPlaceholder" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 100,
+      "indexByteStart" : 6,
+      "indexByteStop" : 7
+    },
+
+    "runId" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 0,
+      "indexByteStart" : 8,
+      "indexByteStop" : 9
+    },
+
+    "tankId" : {
+      "lengthBytes" : 64,
+      "type" : "charArray",
+      "value" : "Blank Tank Id Information Placeholder",
+      "indexByteStart" : 10,
+      "indexByteStop" : 73
+    },
+
+    "timestamp" : {
+      "lengthBytes" : 19,
+      "type" : "charArray",
+      "value" : "dd/mm/yyyy hh:mm:ss",
+      "indexByteStart" : 76,
+      "indexByteStop" : 94,
+      "comment" : "timestamp length is bytes 74:75 while the actual value is bytes 76:94. The actual length really is determined and implemented just from the timestamp format in the additional file info section of this capture options file."
+    },
+
+    "transducersNum" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 4,
+      "indexByteStart" : 95,
+      "indexByteStop" : 96
+    },
+
+    "sampleRateMHz" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 40,
+      "indexByteStart" : 97,
+      "indexByteStop" : 98,
+      "comment1" : "This may be used and yes legacy is MHz for the value, by the legacy software.  The value here is indeed used to populate the main header.  A value passed in via code from mainWindow is however used to populate the equivalent field, the timebase in seconds, for the individual waveform record header.",
+      "comment2" : "TODO could this or should this be actually the XD firing rate? or similar?"
+    },
+
+    "runLengthInches" : {
+      "lengthBytes" : 4,
+      "type" : "singleFloat",
+      "value" : 24.0,
+      "indexByteStart" : 99,
+      "indexByteStop" : 102
+    },
+
+    "runSpeedInchesPerSec" : {
+      "lengthBytes" : 4,
+      "type" : "singleFloat",
+      "value" : 4.0,
+      "indexByteStart" : 99,
+      "indexByteStop" : 102
+    },
+
+    "minimumRecordLength" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 0,
+      "indexByteStart" : 103,
+      "indexByteStop" : 106
+    },
+
+    "offsetToFirstCaptureWaveformBaseOne" : {
+      "lengthBytes" : 4,
+      "type" : "Int32",
+      "value" : 5860,
+      "indexByteStart" : 109,
+      "indexByteStop" : 112,
+      "comment" : "To get the actual byte position, subtract one from this value. E.g. 0x16e5 is 5861 0000 = 5861 => go to position 5860 for first byte"
+    },
+
+    "lengthOfWaveformRecord" : {
+      "lengthBytes" : 4,
+      "type" : "Int32",
+      "value" : 10026,
+      "indexByteStart" : 113,
+      "indexByteStop" : 116,
+      "comment" : "For example for 4-byte singleFloat values at 2500 samples plus the 26-byte header for each waveform this is 10026 = 2A27 0000 = 0x272A = 10026"
+    },
+
+    "pulseTypeAndAnalyzeMode" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 1,
+      "indexByteStart" : 117,
+      "indexByteStop" : 118,
+      "comment" : "0 = legacy swept freq and 1 = simple neg pulse with received echoes waveform incl face interactions"
+    },
+
+    "templateEntry" : {
+      "lengthBytes" : 2,
+      "type" : "Int16",
+      "value" : 0,
+      "indexByteStart" : 100,
+      "indexByteStop" : 1000,
+      "comment" : "Sample entry for user sample run file waveform record compilation"
+    }
+
+  },
+
+  "transducersInfo" : {
+
+    "header" : {
+      "lengthBytes" : 40
+    },
+
+    "calWaveFilesOptions" : {
+      "firstLineToReadFrom" : 6
+    },
+
+    "calWaveFiles" : {
+      "xd1" : "xd1-calwave.csv",
+      "xd2" : "xd2-calwave.csv",
+      "xd3" : "xd3-calwave.csv",
+      "xd4" : "xd4-calwave.csv"
+    },
+
+    "calWaveFilesInfo" : {
+      "sampleFrequencyHz" : 35000000,
+      "sampleFrequencyHzComment" : "Please see readme. It seems there are multiple varying naming conventions and implementations of this in the legacy code and file formats.  It is normally imported from the waveform csv file.  However, some files show the frequency in Hz while others store the value as a number of seconds, as in, 4e-08 = 40 ns = 25 MHz.  Thus, we are just using the capture options file here to define a value more clearly.",
+      "comment2" : "Real value for these files was 3500000. However with a 40MHz waveform, this creates a huge ratio value needed in processing for legacy software. So we lie and say 40000000 to match.",
+      "comment3" : "Some software doesn't even use the transducer cal files that are packaged in these UTRs!",
+      "comment4" : "Recently 2022 early was 35000000 and calwaves may be that value - see above - for now setting this to streaming hardware RS8 and RS104 real values of 40MHz - note DL0100A1 is 35MHz but is not yet batch run - but cal waves maybe from DL0100A1 scan - so keep at 35MHz.",
+      "comment5" : "TODO probably some day when all SW chain is syncd we want to pull this values from the hardware options file etc"
+    },
+
+    "serialNumbers" : {
+      "xd1" : "SN0001",
+      "xd2" : "SN0002",
+      "xd3" : "SN0003",
+      "xd4" : "SN0004"
+    },
+
+    "serialNumbersInfo" : {
+      "comment" : "16 characters allowed per legacy file convention matching",
+      "lengthBytes" : 16
+    },
+
+    "numberOfScannedChannels" : {
+      "value" : 8,
+      "comment" : "For example, in the default HDL-0108-RSCPT hardware at this time, 8 channels are queried per scan, even if for legacy compatibility for the end-user demo and their legacy compat, only 4 channels are used in the file.  Change this the firmware and modes on the hardware is updated."
+    }
+
+  },
+
+  "additionalFileInfo" : {
+
+    "fileNaming" : {
+      "prefix" : "run_",
+      "extensionWithDot" : ".UTR",
+      "padZeroesInSequenceNum" : 4
+    },
+
+    "excludeStartOfFrameFromOutput" : true,
+
+    "readingsPerInch" : {
+      "value" : 6.25,
+      "comment" : "This value is used as a constant and may or may not, likely not, reflect reality.  It is imlemented in customer code simply to calculate the number of scans per waveform.  For example a run length of 24 multiplied by the constant here gives 150 scans per file."
+    },
+
+    "offsetToFirstTransducerRecord" : {
+      "value" : 1024,
+      "comment" : "Another constant that basically indicates the length of the header prior to transducer data and then signal waveforms."
+    },
+
+    "waveformRecordHeader" : {
+      "baseHeaderLen" : 26,
+      "baseHeaderLenComment" : "For waveform records the base header length is this amount and then follow the bytes of data",
+      "legacyArrayDescriptorRank" : 1,
+      "legacyLowerBoundIndex" : 1
+    },
+
+    "captureFileOutputBytesPerWaveformSample" : {
+      "lengthBytes" : 4,
+      "comment" : "Legacy compat uses waveform samples converted to 4-byte single/floats"
+    },
+
+    "duplicateFileNaming" : {
+      "midFixPrefix" : "SER",
+      "numDigits" : 4,
+      "midFixSuffix" : "_",
+      "comment" : "By default/nominal/legacy: filename begins already with run_ so there is already an underscore before the midfix"
+    },
+
+    "timestampFormat" : "%d/%m/%Y %H:%M:%S",
+
+    "comments" : {
+      "1" : "If you want to update timebase (Wfs) and sample rate in MHz (main header) to match legacy files such that these look exactly the same and don't reflect the new hardware reality, update (1): mainWindow to have the older sample rate in Hz and (2) update this file in the header section to have the legacy sample rate."
+    },
+
+    "managedStop" : {
+      "stopType" : "queueTheStopAndWaitUntilFileCompleted",
+      "comments" : {
+        "1" : "This is for when the STOP button is clicked in the Data Capture Focused mode. Handling end of file or partial file conditions.",
+        "2" : "stopTypes can be: defaultDoNothing OR queueTheStopAndWaitUntilFileCompleted OR stopNowAndDeletePartialFile"
+      }
+    }
+
+  }
+
+}

@@ -629,13 +629,6 @@ function setPrefToInterfaceDataCaptureFocused(btn) {
   YourFace.SwitchInterface(ui, undefined, true);
 }
 
-function setPrefToInterfaceNewUI(btn) {
-  let ui = btn.getAttribute("value");
-  console.log("setting preference to use New User Interface");
-  ipcRenderer.send('prefs:set', { 'key':'interface', 'value':'newUI'});
-  YourFace.SwitchInterface(ui, undefined, true);
-}
-
 function setPrefToggleRangeSliderValues(btn) {
   // If includes Restore, then currently set to not restore the value and should be changed to restore it
   var yesRestoreRangeValues = true;
@@ -1016,6 +1009,7 @@ let  loadCustomCommandsPromise = (prefs) => {
       } else {
         console.log("Filepath in preferences for customCommandsFilePath, " + customCommandsFilePath + ", does not exist ... defaulting to packaged fallback");
         try {
+          console.log("CustomCommandsFilePath: " + customCommandsFilePath);
           customCommandsJson = require(prefs.customCommandsFilePathPackaged);
           resolve(customCommandsJson);
         } catch (e) {
@@ -1173,12 +1167,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
       //   // will be like <ul class="collapsible collapsible-accordion">...</ul>
       // });
 
-
-      if (prefs.newInterface) {
-        YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiNewUI);
-      } else {
-        YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
-      }
+     YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
       
       if (prefs.boolUsePlugins) {
         plugins = require('./plugins.js');
@@ -1246,10 +1235,6 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
 
   setupMultipaneCharts($("#divMultichart"), numChans);
 
-  // Friday test one
-  // console.log("Is animStarted" + animStarted)
-  // animStarted = true;
-  // console.log("Is animStarted" + animStarted)
 
   // TODO extract the urls and texts
   // TODO extract the setting / changing img functions / strings
@@ -1343,17 +1328,6 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
   //   onOpen: function(ele) { storeUserCollapsibleState(ele); },
   //   onClose: function(ele) { storeUserCollapsibleState(ele); }
   // });
-
-  $('#footerToggle').click(function(){
-    if($('.expandable-footer').height() == 0){
-        $('.expandable-footer').height('200px'); // Change '200px' to the height of your footer
-        $('#footerToggle').css('bottom', '200px'); // Adjust button position to the height of the footer
-    }
-    else{
-        $('.expandable-footer').height('0');
-        $('#footerToggle').css('bottom', '0');
-    }
-});
 
 }); // end of $(document).ready(...{...})
 // END OF DOCUMENT.READY(...)
@@ -1520,8 +1494,19 @@ function loadButtons(customCommandsJson) {
   // Basic test functions and single-port style device buttons (aka DLITE legacy)
   // Can use user data path instead when running live not dev
   // Previous generation of basic default buttons for demos ...
-  const path = "./user-data/buttons-example.json"
-  var buttons = require(path).buttons;
+  // const path = "./user-data/buttons-example.json"
+  // var buttons = require(path).buttons;
+
+const path = require('path');
+const fs = require('fs');
+
+const buttonFilePath = path.join(process.resourcesPath, 'extraResources', 'user-data', 'buttons-example.json');
+
+// Use fs.readFileSync and JSON.parse instead of require to read the json file
+var buttons = JSON.parse(fs.readFileSync(buttonFilePath, 'utf8')).buttons;
+
+  //const path = "./user-data/buttons-example.json"
+  //var buttons = require(path).buttons;
   console.log(buttons.length + " buttons found.");
   buttons.forEach( function (b) {
     var newb = $('<button/>')

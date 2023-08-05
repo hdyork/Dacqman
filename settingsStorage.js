@@ -41,6 +41,7 @@ class SettingsStorage {
     // the former ...) - maybe ... anyway, here: "||"
     // Renderer process has to get `app` module via `remote`, whereas the main process can get it directly
     const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+    //const userDataPath = path.join(process.resourcesPath, 'extraResources', 'user-Data');
     console.log("SettingsStorage: userDataPath is: " + userDataPath);
 
     this.path = path.join(userDataPath, options.settingsFileName + '.json');
@@ -48,6 +49,7 @@ class SettingsStorage {
     this.data = parseDataFile(this.path, options.defaults);
   }
 
+  
   // Get(ter)
   get(key) {
     return this.data[key];

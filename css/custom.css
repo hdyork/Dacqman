@@ -244,7 +244,7 @@ span#filesWrittenBadge.badge {
   margin-top: 3px;
 }
 
-/*
+
 #capture_ui_buttons button.tempUiBigButtonSmallText {
   font-size: 1.5em;
   line-height: 1.1;
@@ -255,10 +255,11 @@ span#filesWrittenBadge.badge {
   height: 80px;
   font-size: 4em;
   margin: 6px;
-}*/
+}
 /*#capture_ui_buttons .green {
   opacity: 0.5;
 }*/
+/*
 #capture_ui_buttons {
   display: flex;
   justify-content: space-between;
@@ -302,6 +303,7 @@ span#filesWrittenBadge.badge {
 #btnCaptureStop{
   background-color: #d63031;
 }
+*/
 #capture_ui_current_filename.row {
   margin: 6px;
   font-size: 1.2em;
