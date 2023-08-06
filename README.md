@@ -191,16 +191,26 @@ samples.
 
 ## Running It
 
-### In Development Mode
+### In Development Mode (From Windows Explorer)
 
 1. Install the development environment items as noted below.
-(Basically: nvm, node 10.18.0, atom ide)
+(Basically: nvm, node 12.18.3, atom ide)
 2. Install the FTDI D2xx driver (maybe - see below regarding drivers -
-  HIGHLIGHT: don't install the D2xxHelper.kext or D2xxHelper package at all as shown in the FTDI installation video - that component is not needed for our purposes)
-2. `git clone` this repo
-2. `cd <project-directory>`
-3. `npm install`
-4. `npm start`
+  HIGHLIGHT: don't install the D2xxHelper.kext or D2xxHelper package at all as shown in the FTDI installation video - that component is not needed for our purposes) [Only do this step if you plan on using your pc to connect to any of the hardware].
+4. `git clone` this repo
+5. Open batch folder in repo directory and run the first three batch files in the order of thier numbering to install all dependencies.
+6. Run the fourth batch file '4. DacqMan Application.bat' to run unpacked applcation.
+
+### In Development Mode (From Command line)
+
+1. Install the development environment items as noted below.
+(Basically: nvm, node 12.18.3, atom ide)
+2. Install the FTDI D2xx driver (maybe - see below regarding drivers -
+  HIGHLIGHT: don't install the D2xxHelper.kext or D2xxHelper package at all as shown in the FTDI installation video - that component is not needed for our purposes) [Only do this step if you plan on using your pc to connect to any of the hardware].
+4. `git clone` this repo
+5. `cd <project-directory>`
+6. `npm install`
+7. `npm start`
 
 ### Just the Runtime (as built ... basically packaged components for executable analog, or a real exe, depending on your platform...)
 
