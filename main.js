@@ -18,7 +18,7 @@ autoUpdater.logger.transports.file.level = "info"
 log.info('App starting...');
 
 // SET ENV
-process.env.NODE_ENV = 'development';//'production'; // lose the devtools etc.
+process.env.NODE_ENV = 'development';//'production'; // lose the devtools etc. 
 
 
 let mainWindow;
@@ -40,14 +40,14 @@ let multiWfsWindow;
 const settingsFileName = "dacqman-settings";
 const settingsDefaults = {
   windowBounds: { width: 800, height: 900 },
-  customCommandsFilePath: './user-data/control-port-buttons.json', // TODO - move to constants?
-  customCommandsFilePathPackaged: './user-data/control-port-buttons.json',
-  customCaptureOptionsFilePath: './user-data/capture-options.json',
-  customCaptureOptionsFilePathPackaged: './user-data/capture-options.json',
-  customTransducerCalibrationFilesDirectory: './user-data/transducer-calibration-files/',
-  customTransducerCalibrationFilesDirectoryPackaged: './user-data/transducer-calibration-files/',
+    customCommandsFilePath: './user-data/control-port-buttons.json', // TODO - move to constants?
+    customCommandsFilePathPackaged: './user-data/control-port-buttons.json',
+    customCaptureOptionsFilePath: './user-data/capture-options.json',
+    customCaptureOptionsFilePathPackaged: './user-data/capture-options.json',
+    customTransducerCalibrationFilesDirectory: './user-data/transducer-calibration-files/',
+    customTransducerCalibrationFilesDirectoryPackaged: './user-data/transducer-calibration-files/',
   interfaceDefault: 'dataCaptureFocused',
-  interface: 'regular',          // regular, dataCaptureFocused
+  interface: 'dataCaptureFocused',          // regular, dataCaptureFocused
   delayControlPortOpenMs: 1000,             // delay + forWhat + units {Ms, Sec, etc.} // TODO implement setter
   // OB NKS: circa imaginary v0.0.14
   boolUsePlugins: true                      // true, false
@@ -56,7 +56,7 @@ const settingsDefaults = {
   , customControlSettingsJson: {            // json sub by divId from textInput label
     'showAsTextInputs' : false,             // default to range sliders
     'restoreTextInputValues' : true,        // default to restoring the text input values
-    'restoreRangeSliderValues' : false      // but not the range slider values
+    'restoreRangeSliderValues' : true      // and the range slider values
   }               
   , devToolsOpen: false                     // restore on opening // TODO FUTURE currently Xing out of devTools doesn't update this
   //, cssToUse: ''                            // default css/custom.css // just use any other or default to custom.css
@@ -105,6 +105,7 @@ var settingsStorage = new SettingsStorage({
 // Listenfor the app to be ready
 app.on('ready', function(){
 
+  
   let { width, height } = settingsStorage.get('windowBounds');
 
   // Create new mainWindow
