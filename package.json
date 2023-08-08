@@ -54,8 +54,7 @@
     "build-unpacked-win": "electron-builder --win --x64 --dir",
     "test": "mocha",
     "test:all": "mocha -R mocha-jenkins-reporter --timeout 20000 \"./src/test/**/*test-*.js\"",
-    "test:one": "mocha --watch -u bdd \"./src/test/**/test-*.js\" --grep \"test-store\"",
-    "postinstall": "electron-builder install-app-deps"
+    "test:one": "mocha --watch -u bdd \"./src/test/**/test-*.js\" --grep \"test-store\""
   },
   "author": "OshaBlue LLC / nisch s.",
   "license": "MIT",
@@ -81,6 +80,7 @@
     "chai-as-promised": "^7.1.1",
     "electron": "^7.3.3",
     "electron-builder": "22.10.5",
+    "electron-rebuild": "^3.2.9",
     "mocha": "^9.2.2",
     "spectron": "^9.0.0"
   }
