@@ -1794,6 +1794,7 @@ function beginSerialComms(button) {
   // Then collapse the selection window ...
   $("#serialPortSelectionAccordion").collapsible('close'); //.children('li:first-child'));
   
+<<<<<<< HEAD
   // Friday test two
   // console.log("Is animStarted" + animStarted)
   // animStarted = true;
@@ -1801,6 +1802,8 @@ function beginSerialComms(button) {
 
   // Friday test three
   // mainWindowUpdateChartData(null);
+=======
+>>>>>>> 7342902103cee63150a198ee784b8b8cf04ad1cf
 
   // Enable anything else if/as needed, esp. in the UI/UX - here, the selected interface
   // including potentially the data-capture-focused UI/UX
