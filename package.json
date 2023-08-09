@@ -55,7 +55,7 @@
     "test": "mocha",
     "test:all": "mocha -R mocha-jenkins-reporter --timeout 20000 \"./src/test/**/*test-*.js\"",
     "test:one": "mocha --watch -u bdd \"./src/test/**/test-*.js\" --grep \"test-store\"",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps && copyfiles -u 1 ./node_modules/7zip-bin/**/* ./extraresources/node_modules && copyfiles -u 1 ./node_modules/app-builder-bin/**/* ./extraresources/node_modules && copyfiles -u 1 ./node_modules/edge-cs/**/* ./extraresources/node_modules && copyfiles -u 1 ./node_modules/electron-edge-js/**/* ./extraresources/node_modules && copyfiles -u 1 ./node_modules/nan/**/* ./extraresources/node_modules && copyfiles -u 1 ./node_modules/node/**/* ./extraresources/node_modules  && copyfiles -u 1 ./extraresources/**/* ./node_modules/electron/dist/resources/extraresources/"
   },
   "author": "OshaBlue LLC / nisch s.",
   "license": "MIT",
@@ -79,6 +79,7 @@
     "@types/mocha": "^10.0.1",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "copyfiles": "^2.4.1",
     "electron": "^7.3.3",
     "electron-builder": "22.10.5",
     "mocha": "^9.2.2",
