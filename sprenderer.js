@@ -1793,7 +1793,6 @@ function beginSerialComms(button) {
 
   // Then collapse the selection window ...
   $("#serialPortSelectionAccordion").collapsible('close'); //.children('li:first-child'));
-  
 
   // Enable anything else if/as needed, esp. in the UI/UX - here, the selected interface
   // including potentially the data-capture-focused UI/UX

@@ -1166,7 +1166,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
       //   //storeUserCollapsibleState(this); // this => liEle in the target function 
       //   // will be like <ul class="collapsible collapsible-accordion">...</ul>
       // });
-
+      
      YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
       
       if (prefs.boolUsePlugins) {
