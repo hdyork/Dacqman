@@ -1167,13 +1167,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
       //   // will be like <ul class="collapsible collapsible-accordion">...</ul>
       // });
 
-<<<<<<< HEAD
      YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
-=======
-
-     YourFace.Load(prefs.interface, prefs.interfaceRefinement, customCommandsJson.uiDataCaptureFocused);
-
->>>>>>> 7342902103cee63150a198ee784b8b8cf04ad1cf
       
       if (prefs.boolUsePlugins) {
         plugins = require('./plugins.js');
