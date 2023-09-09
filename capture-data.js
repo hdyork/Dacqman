@@ -594,7 +594,8 @@ class CaptureDataFileOutput {
 
       // TEST:
       // To break this, remove "toString()" from the fs.access call for example
-
+      // Live Waveform Test - Uncomment the line below and comment out try/catch block
+      //resolve(true);
       try {
         // Wrapping because just adding a catch doesn't seem to fire correctly - probably I'm just missing something
         fs.access(this.directory.toString(), fs.constants.W_OK, err => {
@@ -1925,12 +1926,17 @@ class CaptureDataFileOutput {
       
       // TODO what else needs to get reset?
 
-      this.createCaptureWriteStreamFilePath()
+       this.createCaptureWriteStreamFilePath()
         .then( res => {
 
           // Initialize file write stream
           try {
-
+            // Live Waveform Test - Uncomment var and if statement
+            // var writeDataToFile = false;
+            // if(writeDataToFile == false) {
+            //   resolve(true);
+            //   return;
+            // }
             console.log("about to createWriteStream: " + this.activeFilePath);
             this.captureWriteStream = fs.createWriteStream(
               this.activeFilePath,
@@ -1997,6 +2003,8 @@ class CaptureDataFileOutput {
 
 
   this.writeDataToFile = ( buf ) => {
+
+    // Live Waveform Test - Comment out whole function
 
     this.captureWriteStream.write(buf, err => {
       if ( err ) {
@@ -2155,7 +2163,7 @@ class CaptureDataFileOutput {
               // all 8 channels but the legacy output requires max of 4 channels
               // Otherwise it will break / get confused.
               if ( di.chan < (this.maxChannelNum + 1) ) {
-
+                // Live Waveform Test
                 this.updateWaveformRecordHeader(di.scan, di.chan)
                   .then( resultWaveformHeaderByteArray => {
 
@@ -2226,11 +2234,12 @@ class CaptureDataFileOutput {
                         }
                       }
 
+                      // Live Waveform Test - Comment out all of var waveformRec and set it equal to an empty buf
                       var waveformRec = Buffer.concat([
                         resultWaveformHeaderByteArray,
                         outWfDat
                       ]);
-
+                      // var waveformRec = Buffer.alloc(0);
                       //console.log(`about to resolve waveformRec with length: ${waveformRec.length}`);
                       resolve(waveformRec);
 
@@ -2240,6 +2249,8 @@ class CaptureDataFileOutput {
                     }
 
                   }); // end of then
+                //resolve(Buffer.alloc(0));
+
 
                 } else { // chan num > max num chans to store for legacy output
 
@@ -2276,6 +2287,14 @@ class CaptureDataFileOutput {
           // waveform parsing module such that the datInfos are never released
           // and thus the input data is never sliced out until it is processed in the
           // next file cycle
+
+          // // Live WaveForm Test - Live wf working but slow
+          // var writeDataToFile = false;
+          // if(writeDataToFile == false) {
+          //   resolve(Buffer.alloc(0));
+          //   return;
+          // }
+
           var wfRecs = Buffer.concat(data);
           this.waveformRecordOutputByteArray = Buffer.concat([
             this.waveformRecordOutputByteArray,
@@ -2317,6 +2336,7 @@ class CaptureDataFileOutput {
             }
           }
 
+          
           resolve(true);
         })
         .catch( e => {
@@ -2344,7 +2364,7 @@ class CaptureDataFileOutput {
     // TODO we could potentially just use pipes to simplify?
 
     if ( this.waveformRecordOutputByteArray.length > 0 ) {
-      this.writeDataToFile(this.waveformRecordOutputByteArray);
+      //this.writeDataToFile(this.waveformRecordOutputByteArray);
       this.waveformRecordOutputByteArray = Buffer.alloc(0);
     }
 

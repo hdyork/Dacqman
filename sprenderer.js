@@ -2147,6 +2147,7 @@ var controlPortSendData = async function ( commandAndType, returnDataTo, button,
             break;
 
           case "fileCapture":
+            
             doFileCapture = o.value;
             break;
 
@@ -2276,6 +2277,7 @@ var controlPortSendData_SetupAndSendCommands = function(commandAndType, override
     case "hexCsvBytes":
       var cmd = commandAndType.value.replace(/\s/g,"").split(',');
       var cmdarr = [];
+      
       cmd.forEach(function(c) {
         cmdarr.push(parseInt(c));
       });
