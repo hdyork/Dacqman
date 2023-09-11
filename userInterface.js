@@ -9,6 +9,10 @@ const { controlPortClose } = require('./sprenderer.js');
 
 const captDataEmitter = require('./capture-data.js').CaptDataEmitter; // For subscribing to events
 
+const { EventEmitter } = require('events');
+
+// Create a new instance of EventEmitter
+const writeDataToFileCheckEmitter = new EventEmitter();
 
 const electron = require('electron');
 const {ipcRenderer } = electron;
@@ -28,7 +32,7 @@ const uiInterfaceRefinementSimple = 'simple';
 
 // Variables here are NOT unique to an object instance
 
-
+var writeDataToFileCheck = false;
 
 
 
@@ -66,34 +70,39 @@ class UserInterface {
     //this._numChannels = null;
 
 
-    captDataEmitter.on('captureDataNewFile', (data) => {
-      let e = $('#uiProgressTextBar');
-      let eHolder = $('#capture_ui_current_filename');
-      $('#filesWrittenBadge').text(data.fn);
-      e.text(data.fp); // filepath here
-      eHolder.addClass('pulse-div');
-      this.updateProgressPercentage(0);
-      setTimeout(
-        function () {
-          $('#capture_ui_current_filename').removeClass('pulse-div');
-        }, 1500
-      );
-    });
-
-    captDataEmitter.on('captureDataProgress', (data) => {
-      //console.log("userInterface.js: capt Data Emitter: data: " + data);
-      this.updateProgressPercentage(data);
-    }); // end of capt Data Emitter.on capture Data Progress
-
-    captDataEmitter.once('captureDataNumberOfChannelsSet', (dataIsNumChans) => {
-      this._numChannels = dataIsNumChans;
-      UISetupMultipaneCharts(dataIsNumChans);
-    });
-
-    // HOOKALERT01 
-    captDataEmitter.on('captureDataManagedStopLastFileComplete', (data) => {
-      $('#btnCaptureStop').click();
-    });
+    try{
+      captDataEmitter.on('captureDataNewFile', (data) => {
+        let e = $('#uiProgressTextBar');
+        let eHolder = $('#capture_ui_current_filename');
+        $('#filesWrittenBadge').text(data.fn);
+        e.text(data.fp); // filepath here
+        eHolder.addClass('pulse-div');
+        this.updateProgressPercentage(0);
+        setTimeout(
+          function () {
+            $('#capture_ui_current_filename').removeClass('pulse-div');
+          }, 1500
+        );
+      });
+  
+      captDataEmitter.on('captureDataProgress', (data) => {
+        //console.log("userInterface.js: capt Data Emitter: data: " + data);
+        this.updateProgressPercentage(data);
+      }); // end of capt Data Emitter.on capture Data Progress
+  
+      captDataEmitter.once('captureDataNumberOfChannelsSet', (dataIsNumChans) => {
+        this._numChannels = dataIsNumChans;
+        UISetupMultipaneCharts(dataIsNumChans);
+      });
+  
+      // HOOKALERT01 
+      captDataEmitter.on('captureDataManagedStopLastFileComplete', (data) => {
+        $('#btnCaptureStop').click();
+      });
+    }
+    catch (e) {
+      console.warn("Error with data emitter (If this throws before data capture start its probably not an issue): " + e);
+    }
 
     // Would not fire if the popout were clicked prior to running data because this UI
     // instance doesn't exist yet 
@@ -481,15 +490,36 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
           if ( jb.mapToButtonId === 'btnCaptureStart' ) {
             $('#btnCaptureStop').removeClass("disabled");
-            $('#btnCapturePause').removeClass("disabled");
+            $('#btnCaptureToFileStart').removeClass("disabled");
             $('#btnCaptureStart').addClass("disabled");
             $('#structureIdInfo').prop('disabled', true);
+
+            //writeDataToFileCheck = true;
+
+            // Emit a 'change' event with the new value of writeDataToFileCheck
+            writeDataToFileCheckEmitter.emit('change', false);
+
 
             // Then send the command
             var d = $('#capture_ui_directory_select').find("input").val();
 
             // the command is implemented in sprenderer
             controlPortSendData(jb.command, jb.returnDataTo, jb, d );
+          }
+
+          if ( jb.mapToButtonId === 'btnCaptureToFileStart' ) {
+            // $('#btnCaptureStop').removeClass("disabled");
+            // $('#btnCaptureToFileStart').removeClass("disabled");
+            // $('#btnCaptureStart').addClass("disabled");
+            // $('#structureIdInfo').prop('disabled', true);
+
+            console.log("Start capture to file");
+
+            // writeDataToFileCheck = true;
+
+            // Emit a 'change' event with the new value of writeDataToFileCheck 
+            writeDataToFileCheckEmitter.emit('change', true);
+
           }
 
         });
@@ -610,6 +640,9 @@ UserInterface.GetStructureIdInfoInput = () => {
 module.exports = {
 
   // Constants
+
+  // Variables
+  writeDataToFileCheckEmitter,
 
   // Functions to be accessed from other modules
   EnableCaptureButtons,

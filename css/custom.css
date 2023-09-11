@@ -285,7 +285,7 @@ span#filesWrittenBadge.badge {
   color: white;
 }
 
-#btnCapturePause:hover{
+#btnCaptureToFileStart:hover{
   background-color: #f39c12;
   color: white;
 }
@@ -299,7 +299,7 @@ span#filesWrittenBadge.badge {
   background-color: #00b894;
 }
 
-#btnCapturePause{
+#btnCaptureToFileStart{
   background-color: #f1c40f;
 }
 

@@ -43,6 +43,47 @@ const csv = require('csv');           // some issues with just csv-parse so usin
 //const parse = require('csv-parse/lib/parse');
 
 const wfparse = require('./waveform-parsing-hdl-010n-RSnnn.js');
+//var {writeDataToFileCheck} = require('./userInterface.js');
+//var writeDataToFileCheck = require('./user-data/control-port-buttons.json').uiDataCaptureFocused.find(button => button.mapToButtonId === 'btnCaptureStart').options.find(option => option.key === 'writeDataToFileCheck').value;
+const { writeDataToFileCheckEmitter } = require('./userInterface.js');
+var writeDataToFileCheck
+const { resetReadableStream } = require('./mainWindow.js');
+// Listen for changes to writeDataToFileCheck
+try{
+writeDataToFileCheckEmitter.on('change', value => {
+  console.log(`writeDataToFileCheck is now ${value}`);
+  writeDataToFileCheck = value;
+  //resetReadableStream();
+  if(value == true) {
+    // CaptDataEmitter.emit('captureDataNewFile', { "fp": this.activeFilePath, "fn": this.fileCounter } );  //   //this.ManagedStopNow();
+  //   console.log("Starting data capture to file")
+  //       this.startNewFile()
+  //       .then ( res => {
+  //         if ( res ) {
+  //           return this.parseInBufferForWaveforms();
+  //         } else {
+  //           console.warn("capture-data.js: ReceiveData: starting new file didn't work: can't write to anything." + res);
+  //           return Promise.resolve(false);
+  //         }
+  //       })
+  //       .then ( res => {
+  //         if ( res ) {
+  //           this.writeWaveformsToFile();
+  //         }
+  //         return;
+  //       })
+  //       .catch ( e => {
+  //         console.warn("capture-data.js: ReceiveData: error: " + e);
+  //       })
+      }
+        
+});
+}
+catch (e) {
+  console.warn("Error with data emitter (If this throws before data capture start its probably not an issue): " + e);
+  writeDataToFileCheck = false;
+}
+console.log("Live Waveform Test: " + writeDataToFileCheck);
 
 // These now come from the additionalFileInfo in the capture-options.json
 //const FN_PREFIX = "run_";
@@ -594,8 +635,11 @@ class CaptureDataFileOutput {
 
       // TEST:
       // To break this, remove "toString()" from the fs.access call for example
-      // Live Waveform Test - Uncomment the line below and comment out try/catch block
-      //resolve(true);
+      // Live Waveform Test - If false resolve true
+          if(writeDataToFileCheck == false) {
+              resolve(true);
+          }
+      
       try {
         // Wrapping because just adding a catch doesn't seem to fire correctly - probably I'm just missing something
         fs.access(this.directory.toString(), fs.constants.W_OK, err => {
@@ -1814,6 +1858,11 @@ class CaptureDataFileOutput {
 
     return new Promise ( (resolve, reject) => {
 
+       // Live Waveform Test - If false resolve true
+       if(writeDataToFileCheck == false) {
+        resolve(true);
+    }
+
       var testFn = this.fileCapturePrefix + ''
         + currentMfx
         + this.getCurrentSuffix();
@@ -1882,7 +1931,6 @@ class CaptureDataFileOutput {
 
 
   this.startNewFile = () => {
-
     // This is called (ideally?) from a receive data event.
     // Which means that, as long as the LoadCaptureOptions()
     // has been called after instantiation,
@@ -1912,9 +1960,13 @@ class CaptureDataFileOutput {
         // Probably async - but the re-opening on a new fp should be fine
       }
 
-      // Create filename and open the path
-      this.fileCounter = this.fileCounter + 1;      // start from 1, init'd at 0
-
+      if (writeDataToFileCheck == true) {
+        // Create filename and open the path
+        this.fileCounter = this.fileCounter + 1;      // start from 1, init'd at 0
+      }
+      else {
+        this.fileCounter = 0;
+      }
       // Reset counters that start over within a file or are used to determine
       // when a new file is needed
       this.scanCounter = 0;
@@ -1931,12 +1983,11 @@ class CaptureDataFileOutput {
 
           // Initialize file write stream
           try {
-            // Live Waveform Test - Uncomment var and if statement
-            // var writeDataToFile = false;
-            // if(writeDataToFile == false) {
-            //   resolve(true);
-            //   return;
-            // }
+             // Live Waveform Test - If false resolve true
+             if(writeDataToFileCheck == false) {
+              resolve(true);
+              return;
+            }
             console.log("about to createWriteStream: " + this.activeFilePath);
             this.captureWriteStream = fs.createWriteStream(
               this.activeFilePath,
@@ -2004,20 +2055,21 @@ class CaptureDataFileOutput {
 
   this.writeDataToFile = ( buf ) => {
 
-    // Live Waveform Test - Comment out whole function
+    // Live Waveform Test - If false do not write to file
+    if(writeDataToFileCheck == true) {
+        this.captureWriteStream.write(buf, err => {
+          if ( err ) {
 
-    this.captureWriteStream.write(buf, err => {
-      if ( err ) {
+            console.error("capture-data.js: writeDataToFile: error: " + err);
 
-        console.error("capture-data.js: writeDataToFile: error: " + err);
+            // Set readyToCapture to false? No. Let's default to trying to allow
+            // continuation.  And just output the issue only.
 
-        // Set readyToCapture to false? No. Let's default to trying to allow
-        // continuation.  And just output the issue only.
-
-      } else {
-        //console.log(`writeDataToFile: received this number of bytes to write: ${buf.length}`);
-      }
-    });
+          } else {
+            //console.log(`writeDataToFile: received this number of bytes to write: ${buf.length}`);
+          }
+        });
+  }
 
   } // End of: writeDataToFile
 
@@ -2163,7 +2215,6 @@ class CaptureDataFileOutput {
               // all 8 channels but the legacy output requires max of 4 channels
               // Otherwise it will break / get confused.
               if ( di.chan < (this.maxChannelNum + 1) ) {
-                // Live Waveform Test
                 this.updateWaveformRecordHeader(di.scan, di.chan)
                   .then( resultWaveformHeaderByteArray => {
 
@@ -2234,12 +2285,16 @@ class CaptureDataFileOutput {
                         }
                       }
 
-                      // Live Waveform Test - Comment out all of var waveformRec and set it equal to an empty buf
-                      var waveformRec = Buffer.concat([
-                        resultWaveformHeaderByteArray,
-                        outWfDat
-                      ]);
-                      // var waveformRec = Buffer.alloc(0);
+                      // Live Waveform Test - If true set up output variable, else resolve an empty buf
+                      if(writeDataToFileCheck == true) {
+                        var waveformRec = Buffer.concat([
+                          resultWaveformHeaderByteArray,
+                          outWfDat
+                        ]);
+                      }
+                      else {
+                        var waveformRec = Buffer.alloc(0);
+                      }
                       //console.log(`about to resolve waveformRec with length: ${waveformRec.length}`);
                       resolve(waveformRec);
 
@@ -2288,12 +2343,11 @@ class CaptureDataFileOutput {
           // and thus the input data is never sliced out until it is processed in the
           // next file cycle
 
-          // // Live WaveForm Test - Live wf working but slow
-          // var writeDataToFile = false;
-          // if(writeDataToFile == false) {
-          //   resolve(Buffer.alloc(0));
-          //   return;
-          // }
+          // Live WaveForm Test - Live wf working but slow
+          if(writeDataToFileCheck == false) {
+            resolve(Buffer.alloc(0));
+            return;
+          }
 
           var wfRecs = Buffer.concat(data);
           this.waveformRecordOutputByteArray = Buffer.concat([
@@ -2364,7 +2418,12 @@ class CaptureDataFileOutput {
     // TODO we could potentially just use pipes to simplify?
 
     if ( this.waveformRecordOutputByteArray.length > 0 ) {
-      //this.writeDataToFile(this.waveformRecordOutputByteArray);
+          // Live WaveForm Test - Live wf working but slow
+          
+          if(writeDataToFileCheck == true) {
+            this.writeDataToFile(this.waveformRecordOutputByteArray);
+          }
+          //this.writeDataToFile(this.waveformRecordOutputByteArray);
       this.waveformRecordOutputByteArray = Buffer.alloc(0);
     }
 
@@ -2516,8 +2575,6 @@ class CaptureDataFileOutput {
     }); // end of new Promise
 
   } // End of: fileExists
-
-
 
 
 
