@@ -32,8 +32,6 @@ const uiInterfaceRefinementSimple = 'simple';
 
 // Variables here are NOT unique to an object instance
 
-var writeDataToFileCheck = false;
-
 
 
 // ES6
@@ -70,7 +68,7 @@ class UserInterface {
     //this._numChannels = null;
 
 
-    try{
+
       captDataEmitter.on('captureDataNewFile', (data) => {
         let e = $('#uiProgressTextBar');
         let eHolder = $('#capture_ui_current_filename');
@@ -99,10 +97,7 @@ class UserInterface {
       captDataEmitter.on('captureDataManagedStopLastFileComplete', (data) => {
         $('#btnCaptureStop').click();
       });
-    }
-    catch (e) {
-      console.warn("Error with data emitter (If this throws before data capture start its probably not an issue): " + e);
-    }
+    
 
     // Would not fire if the popout were clicked prior to running data because this UI
     // instance doesn't exist yet 
@@ -381,7 +376,8 @@ EnableCaptureButtons = () => {
     '#btnWarnings',
     '#btnErrors'
 
-    , '#btnCaptureStart'
+    , '#btnCaptureStart',
+    '#btnCaptureToFileStart'
     //, '#btnCaptureStop' // Only enable if Start has been clicked, and etc for such UX
   ].map( function(i) {
     d.find( $(i) ).removeClass('disabled');
@@ -431,14 +427,17 @@ DirectorySelectClick = (event) => {
 
 
 
-
-
-
+var instantStop = true;
 
 addButtonLogicFromJson = ( jsonButtons ) => {
 
   jsonButtons.map( function(jb) {
     var b = $(document).find("#" + jb.mapToButtonId);
+    // Find the jb object for btnCaptureStart
+      const btnCaptureStartJb = jsonButtons.find(jb => jb.mapToButtonId === 'btnCaptureStart');
+      
+    // Find the jb object for btnCaptureStop
+      const btnCaptureStopJb = jsonButtons.find(jb => jb.mapToButtonId === 'btnCaptureStop');
     if ( b ) {
       console.log(`Adding logic from json button to id ${jb.mapToButtonId} for button ${b.attr("id")}`);
       b
@@ -457,6 +456,10 @@ addButtonLogicFromJson = ( jsonButtons ) => {
             // HOOKALERT01 -- somewhere here or within either next two commands is where we check for customCaptureOptionsJson.additionalFileInfo.managedStop.stopType 
             //
             // Below: defined in mainWindow.js as an sprend.function; function implemented in sprenderer.js - and now talks to the capture-data batch file output object to manageStop if necessary
+            
+            console.log("addButtonLogicFromJSON: End file capture / live waveform view");
+
+
             cancelCustomControlButtonCommand()
             .then( whatToDoNowJson => {
               console.log(JSON.stringify(whatToDoNowJson));
@@ -465,6 +468,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
                 $('#btnCaptureStop').addClass(whatToDoNowJson.stopButtonAddClass);
                 $('#btnCaptureStop').removeClass(whatToDoNowJson.stopButtonRemoveClass);
                 $('#btnCaptureStart').removeClass(whatToDoNowJson.startButtonRemoveClass);
+                $('#btnCaptureToFileStart').removeClass(whatToDoNowJson.startButtonRemoveClass);
                 $('#structureIdInfo').prop('disabled', whatToDoNowJson.structureIdInfoDisabled);
               //} 
               if ( whatToDoNowJson.stopNow == true ) {
@@ -494,33 +498,32 @@ addButtonLogicFromJson = ( jsonButtons ) => {
             $('#btnCaptureStart').addClass("disabled");
             $('#structureIdInfo').prop('disabled', true);
 
-            //writeDataToFileCheck = true;
-
-            // Emit a 'change' event with the new value of writeDataToFileCheck
-            writeDataToFileCheckEmitter.emit('change', false);
+            console.log("addButtonLogicFromJSON: Start live waveform view");
 
 
             // Then send the command
             var d = $('#capture_ui_directory_select').find("input").val();
 
             // the command is implemented in sprenderer
-            controlPortSendData(jb.command, jb.returnDataTo, jb, d );
+            controlPortSendData(jb.command, jb.returnDataTo, jb, d, null);
           }
 
           if ( jb.mapToButtonId === 'btnCaptureToFileStart' ) {
-            // $('#btnCaptureStop').removeClass("disabled");
-            // $('#btnCaptureToFileStart').removeClass("disabled");
-            // $('#btnCaptureStart').addClass("disabled");
-            // $('#structureIdInfo').prop('disabled', true);
+            $('#btnCaptureStop').removeClass("disabled");
+            $('#btnCaptureToFileStart').addClass("disabled");
+            $('#btnCaptureStart').addClass("disabled");
+            $('#structureIdInfo').prop('disabled', true);
 
-            console.log("Start capture to file");
+            console.log("addButtonLogicFromJSON: Start capture to file");
 
-            // writeDataToFileCheck = true;
+            // Then send the command
+            var d = $('#capture_ui_directory_select').find("input").val();
 
-            // Emit a 'change' event with the new value of writeDataToFileCheck 
-            writeDataToFileCheckEmitter.emit('change', true);
-
+            // the command is implemented in sprenderer
+            controlPortSendData(btnCaptureStartJb.command, btnCaptureStartJb.returnDataTo, btnCaptureStartJb, d, true);
           }
+
+          
 
         });
     }
@@ -641,8 +644,7 @@ module.exports = {
 
   // Constants
 
-  // Variables
-  writeDataToFileCheckEmitter,
+
 
   // Functions to be accessed from other modules
   EnableCaptureButtons,

@@ -2024,14 +2024,15 @@
 
 
     {
-      "title": "Set PAQ Mode Continuous Channel Scan",
+      "title": "Set PAQ Mode Continuous Channel Scan, No File Write",
       "mapToButtonId" : "btnCaptureStart",
       "command": {
         "type": "hexCsvBytes",
         "value": "0x53, 0x00, 0x00, 0x00, 0x08, 0x00, 0x04, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x50"
       },
-      "description": "Scan defined channels continuously until stop/cancel and split up into batch files using custom capture options.",
+      "description": "Scan defined channels continuously until stop/cancel and display in charts.",
       "returnDataTo" : "multiChart",
+      "fileWrite" : "null",
       "options" : [
         {
           "key" : "fileCaptureCustomToDirectory",
@@ -2039,7 +2040,7 @@
         },
         {
           "key" : "captureBufferMultiple",
-          "value" : 8,
+          "value" : 4,
           "notes" : [
             "This defines chunk size multiple, the number of waveform-lengths, nominally, to include in the buffer readable event for the read stream buffer in the main window graph demo code.",
             "It is also used in the data capture and user interface demo code to determine how much to decimate the UI data that gets pushed to the graph(s) to reduce UI overhead and prevent buffer processing overflows for display purposes.",
@@ -2062,15 +2063,10 @@
 
 
     {
-      "title": "Capture To File Start",
-      "mapToButtonId" : "btnCaptureToFileStart",
-      "description": "Start capturing data to file"
-    },
-
-
-    {
       "title": "Set PAQ Mode (Back to) Single (Not continuous)",
       "mapToButtonId" : "btnCaptureStop",
+      "fileWrite" : "false",
+
       "command": {
         "type": "hexCsvBytes",
         "value": "0x53, 0x00, 0x00, 0x00, 0x08, 0x00, 0x04, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x50"
@@ -2086,9 +2082,15 @@
       "comments" : {
         "0" : "This is copied from the basic buttons section as a template for ui customization application"
       }
+    },
+
+
+    {
+      "title": "Set PAQ Mode Continuous Channel Scan",
+      "mapToButtonId" : "btnCaptureToFileStart",
+      "description": "Scan defined channels continuously until stop/cancel and split up into batch files using custom capture options.",
+      "fileWrite" : "true"
     }
-
-
 
   ]
 

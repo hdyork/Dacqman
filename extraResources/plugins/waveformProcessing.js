@@ -130,11 +130,14 @@ class ProcessWaveform {
       }
 
       this.UpdateThickness = function(val) {
-        console.log("UpdateThickness, thickness element: " + this.thicknessElementName);
-        console.log(val);
-        $('#' + this.thicknessElementName + (val.Channel - 1).toString()).text("THK: "+ val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
-        $('#' + this.thicknessElementName).text("THK: "+ val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
-      }
+        if (val.Thickness > 0 && val.Rms > 0)
+        {
+            console.log("UpdateThickness, thickness element: " + this.thicknessElementName);
+            console.log("val: " + JSON.stringify(val));
+            $('#' + this.thicknessElementName + (val.Channel - 1).toString()).text("THK: " + val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
+            $('#' + this.thicknessElementName).text("THK: " + val.Thickness.toFixed(5) + ", RMS: " + val.Rms.toFixed(1));
+        }
+    }
 
       this.Start = function() {
         console.log("ProcessWaveform Start");

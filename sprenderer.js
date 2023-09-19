@@ -55,6 +55,7 @@ var time;
 
 
 
+
 async function vcpFind() {
   try {
     const ports = await SerialPort.list();
@@ -2007,20 +2008,18 @@ var showControlPortOutput = function ( asciiStuff ) {
 
 
 
+// var testFileWrite;
 
-
-
+//var writeToFileCheck;
 var executingTimeoutFcns = [];
-var controlPortSendData = async function ( commandAndType, returnDataTo, button, outputDirectory ) {
+var controlPortSendData = async function ( commandAndType, returnDataTo, button, outputDirectory, fileWrite ) {
 
   // TODO REFINE This is a scary long function
 
   console.log("controlPortSendData");
-
   if ( cport ) {
 
     var cmdarr = [];
-
     // TODO Warning: there needs of course to be some kind of limits and sanity
     // checking structure -- length of commands, etc.
     // This could be a separate structure that is required with an imported
@@ -2091,6 +2090,7 @@ var controlPortSendData = async function ( commandAndType, returnDataTo, button,
             // TODO this is poor compartmentalized coding - this fcn is in the
             // mainWindow.html at the moment
             // Anyway, reset and just use a single chunksize buffer
+            console.log("Stop Button Clicked")
             resetReadableStream(1);
 
             // TODO also flush / empty the serial port if possible?
@@ -2135,7 +2135,8 @@ var controlPortSendData = async function ( commandAndType, returnDataTo, button,
             break;
 
           case "captureBufferMultiple":
-            resetReadableStream(parseInt(o.value));
+            console.log("Start Button Clicked")
+            resetReadableStream(parseInt(o.value));//, fileWrite);
             break;
 
           case "captureSizeBytes":
@@ -2228,7 +2229,8 @@ var controlPortSendData = async function ( commandAndType, returnDataTo, button,
         if ( doFileCaptureCustomToDirectory ) {
           setupFileCaptureCustomBatches(    // was await - but now this returns a promise
             captureDataFileOutputDirectory,
-            captureSizeNumberOfWaveformsPerFile
+            captureSizeNumberOfWaveformsPerFile,
+            fileWrite
           )
           .then( (res) => {
             if ( !res ) {
@@ -2350,24 +2352,52 @@ var controlPortSendData_SetupAndSendCommands = function(commandAndType, override
 
 
 
-
-
-setupFileCaptureCustomBatches = ( outputDirectory, numberOfWaveformsPerFile ) => {
+setupFileCaptureCustomBatches = ( outputDirectory, numberOfWaveformsPerFile, fileWrite ) => {
 
   // Yes, functionally, at this writing,
   // this is called each time we "start" acquisition from the data capture focused UI/UX
+
 
   captureDataFileOutputBatch = null;
 
   captureDataFileOutputBatch = new CaptureDataFileOutput({
     directory: outputDirectory,
     numberOfWaveformsPerFile: numberOfWaveformsPerFile,
-    numberOfSamplesPerWaveform : defaultHardwareWaveformLengthSamples,  // Same as below
-    numberOfBytesPerSample: defaultHardwareWaveformBytesPerSample,       // From mainWindow (defined)
-    waveformSampleFrequencyHz: defaultHardwareWaveformSampleFrequencyHz,   // Same as comment above
+    numberOfSamplesPerWaveform: defaultHardwareWaveformLengthSamples,
+    numberOfBytesPerSample: defaultHardwareWaveformBytesPerSample,
+    waveformSampleFrequencyHz: defaultHardwareWaveformSampleFrequencyHz,
     structureIdInfoInputEle: YouFace.GetStructureIdInfoInput(),
-    plugins : plugins                                                     // From mainWindow (defined)
+    plugins: plugins,
+    fileWriteCheck: fileWrite
   });
+
+  if (captureDataFileOutputBatch.fileWriteCheck) {
+    console.log("setupFileCaptureCustomBatches: Set up captureDatFileOutputBatch for data output to files" );
+    captureDataFileOutputBatch = new CaptureDataFileOutput({
+      directory: outputDirectory,
+      numberOfWaveformsPerFile: numberOfWaveformsPerFile,
+      numberOfSamplesPerWaveform: defaultHardwareWaveformLengthSamples,
+      numberOfBytesPerSample: defaultHardwareWaveformBytesPerSample,
+      waveformSampleFrequencyHz: defaultHardwareWaveformSampleFrequencyHz,
+      structureIdInfoInputEle: YouFace.GetStructureIdInfoInput(),
+      plugins: plugins,
+      fileWriteCheck: true
+    });
+
+  }
+  if (!captureDataFileOutputBatch.fileWriteCheck) {
+    console.log("setupFileCaptureCustomBatches: Set up captureDatFileOutputBatch for live waveform view" );
+    captureDataFileOutputBatch = new CaptureDataFileOutput({
+      directory: outputDirectory,
+      numberOfWaveformsPerFile: numberOfWaveformsPerFile,
+      numberOfSamplesPerWaveform: defaultHardwareWaveformLengthSamples,
+      numberOfBytesPerSample: defaultHardwareWaveformBytesPerSample,
+      waveformSampleFrequencyHz: defaultHardwareWaveformSampleFrequencyHz,
+      structureIdInfoInputEle: YouFace.GetStructureIdInfoInput(),
+      plugins: plugins,
+      fileWriteCheck: false
+    });
+  }
 
   return new Promise ((resolve, reject) => {
 
@@ -2388,6 +2418,7 @@ setupFileCaptureCustomBatches = ( outputDirectory, numberOfWaveformsPerFile ) =>
 
   //return everythingIsFine;
 }
+
 
 
 
@@ -2756,9 +2787,6 @@ var getHardwareData = function() {
 } // End of: getHardwareData
 
 
-
-
-
 module.exports = {
   serialOpenByName: serialOpenByName,
   serialClose: serialClose,
@@ -2778,5 +2806,5 @@ module.exports = {
   ftdiFind: ftdiFind,
   setupModalHardwareSelect: setupModalHardwareSelect,
   setHardwareByFullname : setHardwareByFullname,
-  getHardwareData : getHardwareData,
+  getHardwareData : getHardwareData
 };

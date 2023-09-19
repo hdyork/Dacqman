@@ -213,8 +213,7 @@ var resetReadableStream = function(chunkMultiple) {
     ourReadableStreamBuffer.pipe(writeStream);
   }*/
 
-
-  ourReadableStreamBuffer.on('readable', function(data) {
+  ourReadableStreamBuffer.on('readable', function(data) {    
 
     //console.log("ourReadableStreamBuffer.(on).readable");
 
@@ -363,7 +362,7 @@ var resetReadableStream = function(chunkMultiple) {
           if ( captureDataFileOutputBatch ) {
 
             // This module/class-instance parses out the data
-            captureDataFileOutputBatch.ReceiveData(chunk);
+              captureDataFileOutputBatch.ReceiveData(chunk);
 
             // The data capture and user interface code handles
             // pushing to the appropriate chart, separately/independently
@@ -873,10 +872,10 @@ function serialTestWrite() {
 function serialSendData(commandAndType, returnDataTo) {
   sprend.serialSendData(commandAndType, returnDataTo);
 }
-function controlPortSendData(commandAndType, returnDataTo, button, outputDirectory) {
+function controlPortSendData(commandAndType, returnDataTo, button, outputDirectory, fileWrite) {
   // We capture and send the button item as well to be able parse and handle
   // any options that are not specified at the command level of the tree
-  sprend.controlPortSendData(commandAndType, returnDataTo, button, outputDirectory);
+  sprend.controlPortSendData(commandAndType, returnDataTo, button, outputDirectory, fileWrite);
 }
 function beginSerialComms() {
   sprend.beginSerialComms();
