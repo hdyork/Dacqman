@@ -34,7 +34,7 @@ const hdlOffset = -0.512;
 //
 // End of constants
 
-
+var nFindSofPair = 0;
 
 var findSofPair = ( buf, startIndex, startingScanNum, maxScanNumToInclude ) => {
 
@@ -125,6 +125,10 @@ var findSofPair = ( buf, startIndex, startingScanNum, maxScanNumToInclude ) => {
 
     if ( buf.length > warningThresholdBufMult * fullWfSizeInclSof ) {
       console.warn("Warning: waveform-parsing-hdl-010n-RSnnn.js: buffer size is very large yet two SOFs have not been located that are within the configured scans per file or channels to use range.  This will rapidly become a problem eating up memory with time-consuming searches.");
+      if( nFindSofPair > 200 ) {
+        console.error("Error: waveform-parsing-hdl-010n-RSnnn.js: buffer size is becoming unsustainable, stop data capture and start a new run or reload application if problem persists.");
+      }
+      nFindSofPair++;
     }
 
     // TODO also somewhere in here warn if the delta between SOFs does not

@@ -246,8 +246,8 @@ span#filesWrittenBadge.badge {
 
 
 #capture_ui_buttons button.tempUiBigButtonSmallText {
-  font-size: 1.5em;
-  line-height: 1.1;
+  font-size: 2vw;
+  line-height: 1;
 }
 
 #capture_ui_buttons button {
@@ -271,22 +271,22 @@ span#filesWrittenBadge.badge {
 #capture_ui_buttons button {
   flex: 1;
   height: 80px;
-  font-size: 2.5em;
+  font-size: 4vw;
   margin: 6px;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-
+  line-height: 1;
 }
 
 #btnCaptureStart:hover{
-  background-color: #55efc4;
+  background-color: #81ecec;
   color: white;
 }
 
-#btnCapturePause:hover{
-  background-color: #f39c12;
+#btnCaptureToFileStart:hover{
+  background-color: #55efc4;
   color: white;
 }
 
@@ -296,11 +296,11 @@ span#filesWrittenBadge.badge {
 }
 
 #btnCaptureStart{
-  background-color: #00b894;
+  background-color: #00cec9;
 }
 
-#btnCapturePause{
-  background-color: #f1c40f;
+#btnCaptureToFileStart{
+  background-color: #00b894;
 }
 
 #btnCaptureStop{
