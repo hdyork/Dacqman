@@ -281,7 +281,8 @@ var resetReadableStream = function(chunkMultiple) {
         if ( prefs.interface === 'dataCaptureFocused' ) {
 
           // <TESTING>
-            audioFdbk.playData(chunk);
+          //Speaker Removal Test
+            // audioFdbk.playData(chunk);
           // </TESTING>
 
           if ( captureDataFileOutputBatch ) {
@@ -1532,7 +1533,8 @@ ipcRenderer.on('multiWfsWindow:update', function(e, data) {
     // TODO if use audio feedback ... ?
     // this is for DCF UI only
     //audioFdbk.playData(data.buf);
-    audioFdbk.roundRobbinPlayData(data.chartToUpdateIndex + 1, data.buf);
+    //Speaker Removal Test
+    // audioFdbk.roundRobbinPlayData(data.chartToUpdateIndex + 1, data.buf);
   }
 });
 

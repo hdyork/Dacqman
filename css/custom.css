@@ -281,7 +281,7 @@ span#filesWrittenBadge.badge {
 }
 
 #btnCaptureStart:hover{
-  background-color: #81ecec;
+   background-color: #55efc4; /* #81ecec; */
   color: white;
 }
 
@@ -296,7 +296,7 @@ span#filesWrittenBadge.badge {
 }
 
 #btnCaptureStart{
-  background-color: #00cec9;
+   background-color: #00b894;/* #00cec9; */
 }
 
 #btnCaptureToFileStart{

@@ -326,7 +326,8 @@ var resetReadableStream = function(chunkMultiple) {
           //if ( prefs.interface !== 'dataCaptureFocused' ){ 
             // oy. above case check because round robbin from the decimateKick thing if DCF
             // but gChunk is still small like 1
-            audioFdbk.playData(singleChartBuf); // this might too as above issue ... TODO
+            //Speaker Removal Test
+            //audioFdbk.playData(singleChartBuf); // this might too as above issue ... TODO
           //}
         }
 
@@ -400,7 +401,8 @@ var resetReadableStream = function(chunkMultiple) {
               multiWfs[curChanToGraphMulti].UpdateChartBuffer(singleChartBuf);
               // TODO round-robbin the audio below:
               //audioFdbk.playData(singleChartBuf);
-              audioFdbk.roundRobbinPlayData(curChanToGraphMulti+1, singleChartBuf);
+              //Speaker Removal Test
+              // audioFdbk.roundRobbinPlayData(curChanToGraphMulti+1, singleChartBuf);
             }
               
             // And if multiWFsWindow is open - send to data to it 
@@ -478,7 +480,8 @@ var MainWindowUpdateChart = function ( channelNumber, buf ) {
       // TODO if use audio feedback ... ?
       // this is for DCF UI only
       //audioFdbk.playData(buf);
-      audioFdbk.roundRobbinPlayData(channelNumber, buf); // play audio buf
+      //Speaker Removal Test
+      // audioFdbk.roundRobbinPlayData(channelNumber, buf); // play audio buf
     }
 
 
@@ -1039,8 +1042,6 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
 
 
 
-
-
   // Set window title to include software version and/or etc?
   $(document.getElementsByTagName('head')[0]).find("title").text("DacqMan " + electron.remote.app.getVersion());
   
@@ -1297,6 +1298,17 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
   }, 1000);
 
 
+  $(".switch").find("input[type=checkbox]").on("change",function() {
+    var boolShowAsRangeSlider = $(this).prop('checked'); // Checked = Right side = Range Sliders
+    // HOOKALERT03:
+    var cust = prefs.customControlSettingsJson;
+    cust['showAsTextInputs'] = !boolShowAsRangeSlider;
+    setKeyAndReloadPrefs('customControlSettingsJson', cust);
+    // </ HOOKALERT03 >
+    showCustomControlsAsRangeSliders(boolShowAsRangeSlider, customCommandsJson);
+  });
+
+
   // Add clicks to divs etc elements statically in the html template that should 
   // trigger tracking of user-clicked open/close status for collapsibles, etc.
   // Oh right - only the #controlPortButtonsFromFileDiv is static - so we need to  
@@ -1470,7 +1482,7 @@ var showCustomControlsAsRangeSliders = function ( boolShowAsSliders, customComma
 
   } else {
 
-    parseAndShowCustomTextInputsAsButtonsAndTextInputs(customCommandsJson);
+    parseAndShowCustomTextInputsAsRangeSliders(customCommandsJson);
 
   }
 }
@@ -1717,7 +1729,6 @@ var buttons = JSON.parse(fs.readFileSync(buttonFilePath, 'utf8')).buttons;
   */
 
 }
-
 
 
 

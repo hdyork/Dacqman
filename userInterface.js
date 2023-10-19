@@ -178,6 +178,20 @@ class UserInterface {
     $("#activeSerialPortStuff").hide();
     $("#singleWaveformChartAccordion").hide();
     $("#divCardConsoleLike").hide();
+
+    var jsonForLiveWaveform = this.buttonsJson;
+    var btnCaptureStartJb = null;
+
+    try {
+      jsonForLiveWaveform.map(function(jb) {
+        var b = $(document).find("#" + jb.mapToButtonId);
+        // Find the jb object for btnCaptureStart
+        btnCaptureStartJb = jsonForLiveWaveform.find(jb => jb.mapToButtonId === 'btnCaptureStart');
+        // console.error("jsonButtonTest: " + JSON.stringify(btnCaptureStartJb));
+      });
+    } catch (error) {
+      console.error(error);
+    }
     
     switch ( uiInterface ) {
       case useRegular:
@@ -195,7 +209,7 @@ class UserInterface {
         if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
             var json = this.buttonsJson;
             // 2nd param is callback function on completion
-            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
         }
         this._uiDataCaptureFocusedParentDiv.removeClass("hide");
         //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
@@ -224,7 +238,7 @@ class UserInterface {
         if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
             var json = this.buttonsJson;
             // 2nd param is callback function on completion
-            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
         }
         this._uiDataCaptureFocusedParentDiv.removeClass("hide");
         //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
@@ -260,7 +274,7 @@ class UserInterface {
             if ( this._uiNewUIDiv.children("div").length < 1 ) {
               var json = this.buttonsJson;
               // 2nd param is callback function on completion
-              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
           }
           this._uiNewUIParentDiv.removeClass("hide");
           break;
@@ -312,7 +326,7 @@ class UserInterface {
 
 
 
-  afterHtmlLoadedCallback (addlParam) {
+  afterHtmlLoadedCallback (addlParam, jsonStartButton) {
     // We stack in the extra param value here and return the expected callback
     // signature because otherwise the addlParam (eg json) gets lost due to lost
     // this. context
@@ -323,7 +337,14 @@ class UserInterface {
       // this. doesn't work here, and these functions use arrow notation outside
       // of the class
       addButtonLogicFromJson(addlParam);
-      addOnClickFunctionsToDataCaptureFocused();
+      // addlParam.map( function(jb) {
+      //   var b = $(document).find("#" + jb.mapToButtonId);
+      //   // Find the jb object for btnCaptureStart
+      //     const btnCaptureStartJb = addlParam.find(jb => jb.mapToButtonId === 'btnCaptureStart');
+      //     console.error("jsonButtonTest: " + JSON.stringify(btnCaptureStartJb));
+      // });
+      // console.error("jsonButtonTest: " + JSON.stringify(jsonStartButton));
+      addOnClickFunctionsToDataCaptureFocused(jsonStartButton);
     }
   } // End of: afterHtmlLoadedCallback
 
@@ -376,8 +397,8 @@ EnableCaptureButtons = () => {
     '#btnWarnings',
     '#btnErrors'
 
-    , '#btnCaptureStart',
-    '#btnCaptureToFileStart'
+    , '#btnCaptureStart'//,
+    // '#btnCaptureToFileStart'
     //, '#btnCaptureStop' // Only enable if Start has been clicked, and etc for such UX
   ].map( function(i) {
     d.find( $(i) ).removeClass('disabled');
@@ -393,7 +414,7 @@ EnableCaptureButtons = () => {
 
 
 
-DirectorySelectClick = (event) => {
+DirectorySelectClick = (event, jsonStart) => {
 
   console.log("DirectorySelectClick");
 
@@ -421,6 +442,8 @@ DirectorySelectClick = (event) => {
     // Now show the filename info area (which includes its progress bar)
     $('#capture_ui_current_filename').removeClass("hide");
   }
+
+  console.error("jsonButtonTest: " + JSON.stringify(jsonStart));
 
 } // End of: DirectorySelectClick
 
@@ -468,7 +491,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
                 $('#btnCaptureStop').addClass(whatToDoNowJson.stopButtonAddClass);
                 $('#btnCaptureStop').removeClass(whatToDoNowJson.stopButtonRemoveClass);
                 $('#btnCaptureStart').removeClass(whatToDoNowJson.startButtonRemoveClass);
-                $('#btnCaptureToFileStart').removeClass(whatToDoNowJson.startButtonRemoveClass);
+                // $('#btnCaptureToFileStart').removeClass(whatToDoNowJson.startButtonRemoveClass);
                 $('#structureIdInfo').prop('disabled', whatToDoNowJson.structureIdInfoDisabled);
               //} 
               if ( whatToDoNowJson.stopNow == true ) {
@@ -494,7 +517,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
           if ( jb.mapToButtonId === 'btnCaptureStart' ) {
             $('#btnCaptureStop').removeClass("disabled");
-            $('#btnCaptureToFileStart').removeClass("disabled");
+            // $('#btnCaptureToFileStart').removeClass("disabled");
             $('#btnCaptureStart').addClass("disabled");
             $('#structureIdInfo').prop('disabled', true);
 
@@ -508,20 +531,20 @@ addButtonLogicFromJson = ( jsonButtons ) => {
             controlPortSendData(jb.command, jb.returnDataTo, jb, d, null);
           }
 
-          if ( jb.mapToButtonId === 'btnCaptureToFileStart' ) {
-            $('#btnCaptureStop').removeClass("disabled");
-            $('#btnCaptureToFileStart').addClass("disabled");
-            $('#btnCaptureStart').addClass("disabled");
-            $('#structureIdInfo').prop('disabled', true);
+          // if ( jb.mapToButtonId === 'btnCaptureToFileStart' ) {
+          //   $('#btnCaptureStop').removeClass("disabled");
+          //   $('#btnCaptureToFileStart').addClass("disabled");
+          //   $('#btnCaptureStart').addClass("disabled");
+          //   $('#structureIdInfo').prop('disabled', true);
 
-            console.log("addButtonLogicFromJSON: Start capture to file");
+          //   console.log("addButtonLogicFromJSON: Start capture to file");
 
-            // Then send the command
-            var d = $('#capture_ui_directory_select').find("input").val();
+          //   // Then send the command
+          //   var d = $('#capture_ui_directory_select').find("input").val();
 
-            // the command is implemented in sprenderer
-            controlPortSendData(btnCaptureStartJb.command, btnCaptureStartJb.returnDataTo, btnCaptureStartJb, d, true);
-          }
+          //   // the command is implemented in sprenderer
+          //   controlPortSendData(btnCaptureStartJb.command, btnCaptureStartJb.returnDataTo, btnCaptureStartJb, d, true);
+          // }
 
           
 
@@ -554,10 +577,10 @@ endOfCaptureBatch = () => {
 
 
 
-addOnClickFunctionsToDataCaptureFocused = () => {
+addOnClickFunctionsToDataCaptureFocused = (jsonStartBtn) => {
 
   $('#capture_ui_directory_select.row').click( function(event) {
-    DirectorySelectClick(event);
+    DirectorySelectClick(event, jsonStartBtn);
   });
 
 } // End of: addOnClickFunctionsToDataCaptureFocused
