@@ -178,6 +178,20 @@ class UserInterface {
     $("#activeSerialPortStuff").hide();
     $("#singleWaveformChartAccordion").hide();
     $("#divCardConsoleLike").hide();
+
+    var jsonForLiveWaveform = this.buttonsJson;
+    var btnCaptureStartJb = null;
+
+    try {
+      jsonForLiveWaveform.map(function(jb) {
+        var b = $(document).find("#" + jb.mapToButtonId);
+        // Find the jb object for btnCaptureStart
+        btnCaptureStartJb = jsonForLiveWaveform.find(jb => jb.mapToButtonId === 'btnCaptureStart');
+        // console.error("jsonButtonTest: " + JSON.stringify(btnCaptureStartJb));
+      });
+    } catch (error) {
+      console.error(error);
+    }
     
     switch ( uiInterface ) {
       case useRegular:
@@ -195,7 +209,7 @@ class UserInterface {
         if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
             var json = this.buttonsJson;
             // 2nd param is callback function on completion
-            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
         }
         this._uiDataCaptureFocusedParentDiv.removeClass("hide");
         //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
@@ -224,7 +238,7 @@ class UserInterface {
         if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
             var json = this.buttonsJson;
             // 2nd param is callback function on completion
-            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+            this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
         }
         this._uiDataCaptureFocusedParentDiv.removeClass("hide");
         //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
@@ -260,7 +274,7 @@ class UserInterface {
             if ( this._uiNewUIDiv.children("div").length < 1 ) {
               var json = this.buttonsJson;
               // 2nd param is callback function on completion
-              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json));
+              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
           }
           this._uiNewUIParentDiv.removeClass("hide");
           break;
@@ -312,7 +326,7 @@ class UserInterface {
 
 
 
-  afterHtmlLoadedCallback (addlParam) {
+  afterHtmlLoadedCallback (addlParam, jsonStartButton) {
     // We stack in the extra param value here and return the expected callback
     // signature because otherwise the addlParam (eg json) gets lost due to lost
     // this. context
@@ -323,7 +337,7 @@ class UserInterface {
       // this. doesn't work here, and these functions use arrow notation outside
       // of the class
       addButtonLogicFromJson(addlParam);
-      addOnClickFunctionsToDataCaptureFocused();
+      addOnClickFunctionsToDataCaptureFocused(jsonStartButton);
     }
   } // End of: afterHtmlLoadedCallback
 
@@ -393,7 +407,7 @@ EnableCaptureButtons = () => {
 
 
 
-DirectorySelectClick = (event) => {
+DirectorySelectClick = (event, jsonStart) => {
 
   console.log("DirectorySelectClick");
 
@@ -422,6 +436,12 @@ DirectorySelectClick = (event) => {
     $('#capture_ui_current_filename').removeClass("hide");
   }
 
+  var d = $('#capture_ui_directory_select').find("input").val();
+
+  controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d );
+
+  // console.error("jsonButtonTest, DirectorySelectClick: command: " + JSON.stringify(jsonStart.command) + " returnDataTo: " + JSON.stringify(jsonStart.returnDataTo) + " jsonStart: " + JSON.stringify(jsonStart) + " d: " + JSON.stringify(d));
+
 } // End of: DirectorySelectClick
 
 
@@ -434,7 +454,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
   jsonButtons.map( function(jb) {
     var b = $(document).find("#" + jb.mapToButtonId);
     // Find the jb object for btnCaptureStart
-      const btnCaptureStartJb = jsonButtons.find(jb => jb.mapToButtonId === 'btnCaptureStart');
+      const btnCaptureStartJbBtnLogic = jsonButtons.find(jb => jb.mapToButtonId === 'btnCaptureStart');
       
     // Find the jb object for btnCaptureStop
       const btnCaptureStopJb = jsonButtons.find(jb => jb.mapToButtonId === 'btnCaptureStop');
@@ -480,6 +500,8 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
                 // the command is implemented in sprenderer
                 controlPortSendData(jb.command, jb.returnDataTo, jb, d );
+                controlPortSendData(btnCaptureStartJbBtnLogic.command, btnCaptureStartJbBtnLogic.returnDataTo, btnCaptureStartJbBtnLogic, d, null);
+
               }
               return whatToDoNowJson;
             });
@@ -520,7 +542,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
             var d = $('#capture_ui_directory_select').find("input").val();
 
             // the command is implemented in sprenderer
-            controlPortSendData(btnCaptureStartJb.command, btnCaptureStartJb.returnDataTo, btnCaptureStartJb, d, true);
+            controlPortSendData(btnCaptureStartJbBtnLogic.command, btnCaptureStartJbBtnLogic.returnDataTo, btnCaptureStartJbBtnLogic, d, true);
           }
 
           
@@ -553,11 +575,10 @@ endOfCaptureBatch = () => {
 
 
 
-
-addOnClickFunctionsToDataCaptureFocused = () => {
+addOnClickFunctionsToDataCaptureFocused = (jsonStartBtn) => {
 
   $('#capture_ui_directory_select.row').click( function(event) {
-    DirectorySelectClick(event);
+    DirectorySelectClick(event, jsonStartBtn);
   });
 
 } // End of: addOnClickFunctionsToDataCaptureFocused

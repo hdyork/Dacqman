@@ -326,7 +326,8 @@ var resetReadableStream = function(chunkMultiple) {
           //if ( prefs.interface !== 'dataCaptureFocused' ){ 
             // oy. above case check because round robbin from the decimateKick thing if DCF
             // but gChunk is still small like 1
-            audioFdbk.playData(singleChartBuf); // this might too as above issue ... TODO
+            //Speaker Removal Test
+            //audioFdbk.playData(singleChartBuf); // this might too as above issue ... TODO
           //}
         }
 
@@ -400,7 +401,8 @@ var resetReadableStream = function(chunkMultiple) {
               multiWfs[curChanToGraphMulti].UpdateChartBuffer(singleChartBuf);
               // TODO round-robbin the audio below:
               //audioFdbk.playData(singleChartBuf);
-              audioFdbk.roundRobbinPlayData(curChanToGraphMulti+1, singleChartBuf);
+              //Speaker Removal Test
+              // audioFdbk.roundRobbinPlayData(curChanToGraphMulti+1, singleChartBuf);
             }
               
             // And if multiWFsWindow is open - send to data to it 
@@ -478,7 +480,8 @@ var MainWindowUpdateChart = function ( channelNumber, buf ) {
       // TODO if use audio feedback ... ?
       // this is for DCF UI only
       //audioFdbk.playData(buf);
-      audioFdbk.roundRobbinPlayData(channelNumber, buf); // play audio buf
+      //Speaker Removal Test
+      // audioFdbk.roundRobbinPlayData(channelNumber, buf); // play audio buf
     }
 
 
@@ -890,7 +893,8 @@ function controlPortSendStuff() {
   sprend.controlPortSendStuff($('#stuffToSend'));
 }
 function controlPortSendDataFromTextInput(button, commandAndType) {
-  sprend.controlPortSendDataFromTextInput(button, commandAndType);
+
+  console.error("controlPortSendDataFromTextInput called: " + JSON.stringify(button) + " " + JSON.stringify(commandAndType));  sprend.controlPortSendDataFromTextInput(button, commandAndType);
 }
 function silenceIndicators(button) {
   $("#btnListeningForData").removeClass('pulse');
@@ -1036,8 +1040,6 @@ let  loadCustomCommandsPromise = (prefs) => {
 
 
 $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQuery functionality for this)
-
-
 
 
 
@@ -1297,6 +1299,17 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
   }, 1000);
 
 
+  $(".switch").find("input[type=checkbox]").on("change",function() {
+    var boolShowAsRangeSlider = $(this).prop('checked'); // Checked = Right side = Range Sliders
+    // HOOKALERT03:
+    var cust = prefs.customControlSettingsJson;
+    cust['showAsTextInputs'] = !boolShowAsRangeSlider;
+    setKeyAndReloadPrefs('customControlSettingsJson', cust);
+    // </ HOOKALERT03 >
+    showCustomControlsAsRangeSliders(boolShowAsRangeSlider, customCommandsJson);
+  });
+
+
   // Add clicks to divs etc elements statically in the html template that should 
   // trigger tracking of user-clicked open/close status for collapsibles, etc.
   // Oh right - only the #controlPortButtonsFromFileDiv is static - so we need to  
@@ -1470,7 +1483,7 @@ var showCustomControlsAsRangeSliders = function ( boolShowAsSliders, customComma
 
   } else {
 
-    parseAndShowCustomTextInputsAsButtonsAndTextInputs(customCommandsJson);
+    parseAndShowCustomTextInputsAsRangeSliders(customCommandsJson);
 
   }
 }
@@ -1565,7 +1578,7 @@ var buttons = JSON.parse(fs.readFileSync(buttonFilePath, 'utf8')).buttons;
   //.text("Custom Control Text Inputs Loaded From File")
   .addClass("custom-control-section")
   .append(spanTextInputControlTitle)
-  .append(switchRangeOrTextInput)
+  // .append(switchRangeOrTextInput)
   ;
 
   $(collVariableInputNodes).find('.collapsible-body').append(textInputControlTitle);
@@ -1724,7 +1737,6 @@ var buttons = JSON.parse(fs.readFileSync(buttonFilePath, 'utf8')).buttons;
 
 
 
-
 var loadTextInputs = function (customCommandsJson) {
 
   // Dual-port style functions
@@ -1776,64 +1788,89 @@ var parseAndShowCustomTextInputsAsRangeSliders = function(customCommandsJson) {
   }
 
   $("div[id^='divTextInputRow']")
-    .remove()
-    ;
+    .remove();
 
   var inputRowDiv = $('<div>')
-    .prop('id', "divTextInputRow") // + inputCnt)
-    .addClass("row")
-    ;
+    .prop('id', "divTextInputRow")
+    .addClass("row");
 
-  var myAddTo = $('#divCustomControlVariableInputs'); // $('#controlPortButtonsFromFileDiv');
+  var myAddTo = $('#divCustomControlVariableInputs');
 
   var theRangeForm = $(document.createElement("form"))
     .attr("action", "#");
 
-  textInputs.forEach( function(ti) {
-    // HOOKALERT03:
+  textInputs.forEach(function(ti) {
     var idBaseToUse = ti.label.replace(/\s/g, '') || "idBaseToUse";
-    // </HOOKALERT03 
     var range = $(document.createElement("p"))
       .text(ti.label)
       .addClass("range-field")
-      .addClass("col s6")                           // 2 per row
+      .addClass("col s12")
       .addClass(ti.class)
-      .append($('<input />', { type: 'range'
-        , class: 'control-range'
-        , id: 'range' + idBaseToUse //ti.label.replace(/\s/g, '')
-        , min: ti.min, max: ti.max, step: 1
-        , value: ti.default
-        , title: ti.description
+      .append($('<input />', {
+        type: 'range',
+        class: 'control-range',
+        id: 'range' + idBaseToUse,
+        min: ti.min,
+        max: ti.max,
+        step: 1,
+        value: ti.default,
+        title: ti.description
       }));
-    // HOOKALERT03 
-    if ( textSettingsJson.hasOwnProperty(idBaseToUse)  
-    && textSettingsJson.restoreRangeSliderValues )
-    {
-      //range.val(textSettingsJson[idBaseToUse]); // NOPE
-      range.find('input[id^=range]').prop('value', textSettingsJson[idBaseToUse]); // YUP
-      // TODO ranges don't send data until they change, so restoring their value 
-      // doesn't mean the hardware has that updated data value 
-      // So we need a UI indicator that indicates value not yet sent until the value is sent 
-      // Unless, wait ...
+    var text = $(document.createElement("p"))
+      .addClass("range-field")
+      .addClass("col s12")
+      .addClass(ti.class)
+      .append($('<input />', {
+        type: 'text',
+        class: 'control-text',
+        id: 'text' + idBaseToUse,
+        min: ti.min,
+        max: ti.max,
+        value: ti.default,
+        title: ti.description
+      }));
+    if (textSettingsJson.hasOwnProperty(idBaseToUse) && textSettingsJson.restoreRangeSliderValues) {
+      range.find('input[id^=range]').prop('value', textSettingsJson[idBaseToUse]);
+      text.find('input[id^=text]').prop('value', textSettingsJson[idBaseToUse]);
     }
-    // </HOOKALERT03
     $(range).on("change", function() {
-      // HOOKALERT03
       var val = $(this).find('input[id^=range]').val();
-      var idToStore = idBaseToUse; //ti.label.replace(/\s/g, ''); // TODO maybe we don't want the prefix just the label
-      console.log(`val: ${val} and idToStore: ${idToStore}`);
+      var idToStore = idBaseToUse;
       textSettingsJson[idToStore] = val;
-      setKeyAndReloadPrefs( 'customControlSettingsJson', textSettingsJson);
-      // </ HOOKALERT03 >
+      setKeyAndReloadPrefs('customControlSettingsJson', textSettingsJson);
+      console.error("controlPortSendDataFromTextInput.RangeSlider " + val);
       controlPortSendDataFromTextInput(this, ti.command);
+      $('#text' + idBaseToUse).val(val);
+    });
+    $(text).on("keypress", function(event) {
+      if (event.which === 13) { // check if enter key is pressed
+        var val = $(this).find('input[id^=text]').val();
+        if (!Number.isInteger(parseFloat(val))) { // check if value is not an integer
+          $('#range' + idBaseToUse).val(textSettingsJson[idBaseToUse]);
+          $('#text' + idBaseToUse).val(textSettingsJson[idBaseToUse]);
+          return;
+        }
+        val = parseInt(val); // convert value to integer
+        if (isNaN(val) || val < ti.min || val > ti.max) {
+          $('#range' + idBaseToUse).val(textSettingsJson[idBaseToUse]);
+          $('#text' + idBaseToUse).val(textSettingsJson[idBaseToUse]);
+          return;
+        }
+        var idToStore = idBaseToUse;
+        textSettingsJson[idToStore] = val;
+        setKeyAndReloadPrefs('customControlSettingsJson', textSettingsJson);
+        controlPortSendDataFromTextInput(this, ti.command); // pass the text field input element as the first argument
+        $('#range' + idBaseToUse).val(val);
+      }
     });
     theRangeForm.append(range);
+    theRangeForm.append(text);
   });
 
   inputRowDiv.append(theRangeForm);
   myAddTo.append(inputRowDiv);
 
-  M.Range.init($('.control-range')); //$('input[type="range"]')); // or this
+  M.Range.init($('.control-range'));
 
   YourFace.RefreshFormatRefinement();
 

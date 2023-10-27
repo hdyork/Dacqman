@@ -2693,10 +2693,10 @@ var controlPortSendDataFromTextInput = function ( button, commandAndType) {
 
         if ( ti.length > 0 ) {
           val = parseInt(ti.val());
-        } else {
-          var tiId = $(button).prop("id").replace("button","div");
-          ti = $("#"+tiId).find("input[type='text']");
-          val = parseInt( $(ti).val() );
+        } 
+        else {
+          ti = $(button).find('input[id^=text]');
+          val = ti.val();
         }
         if ( isNaN(val) ) {
           // TODO - throw

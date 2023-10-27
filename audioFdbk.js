@@ -102,7 +102,8 @@ env.stop(stopAt);
 var Generator = require('audio-generator/stream');
 var Speaker = require('audio-speaker/stream');
 
-var PlainSpeaker = require('speaker'); // require('audio-speaker');
+//Speaker Removal Test
+// var PlainSpeaker = require('speaker'); // require('audio-speaker');
 //var PlainSpeaker = require('speaker'); ///stream');
 
 const bufferAlloc = require('buffer-alloc');
@@ -152,189 +153,190 @@ let upsample = require('./upsample-custom.js');
 
 
 let speakerDestroyTimeoutId;
-let plainSpeaker;
+//Speaker removal test
+// let plainSpeaker;
 
-var playData = function(data) {
+// var playData = function(data) {
 
-  //console.log(isReady);
+//   //console.log(isReady);
 
-  if ( !okToPlay() ) {
-    return;
-  }
+//   if ( !okToPlay() ) {
+//     return;
+//   }
 
-  if ( !isReady ) { return; }
-  isReady = false; // wait until write data
+//   if ( !isReady ) { return; }
+//   isReady = false; // wait until write data
 
-  // let's now use the drain event responder - nope that ends too soon
-  setTimeout(function(){
-      isReady = true;
-  }, timeoutMs);
-
-
-  // Below isn't right ... just setting up
-  // const stream = new Readable();
-  // stream.bitDepth = 16
-  // stream.channels = 2
-  // stream.sampleRate = 44100
-  // stream.samplesGenerated = 0
-  // stream._read = read
-  // stream.pipe(new PlainSpeaker());
+//   // let's now use the drain event responder - nope that ends too soon
+//   setTimeout(function(){
+//       isReady = true;
+//   }, timeoutMs);
 
 
-
-  if ( !plainSpeaker ) {
-
-    // Create the Speaker instance
-    // Works when using speaker.write and not the Readabe instance + pipe
-    plainSpeaker = new PlainSpeaker({
-      channels: 2,
-      bitDepth: 16,
-      sampleRate: sr // 3000 - 384000
-    });
-
-    plainSpeaker.on('open', () => {
-      console.log('Speaker open');
-    })
-
-    plainSpeaker.on('flush', () => {
-      console.log('Speaker flush');
-    });
-
-    plainSpeaker.on('close', () => {
-      console.log('Speaker close');
-      //isReady = true; // nope
-    });
-
-    plainSpeaker.on('end', () => {
-      console.log('Speaker end');
-    });
-
-    plainSpeaker.on('drain', () => {
-      //console.log('Speaker drain'); // this one actually does fire at the end of a played buffer
-      //isReady = true; // naw that happens too soon
-    });
-
-    plainSpeaker.on('finish', () => {
-      console.log('Speaker finish');
-    });
-
-  } // speaker is not falsy
-
-
-  // Just rudimentary testing, and this Buffer usage is deprecated still ...
-  // Just add 1 sample since incoming data is 4095 bytes
-  // TODO method-ize for any not 2n length
-  // Values are 0 to 255
-  dataByteToLengthIn = Buffer.alloc(samplesPerBufferIn, 0, Uint8Array); // Buffer.concat([new Buffer(1), data]);
-  data.copy(dataByteToLengthIn, 0, 0); // last param omitted as default is to copy the whole source
-  //data3 = Buffer.from(new Uint16Array(data2));
-
-
-  // Test values
-  // https://github.com/TooTallNate/node-speaker/blob/master/examples/sine.js
-  const bitDepth = 16
-  const channels = 2
-  // For 4095 or 6 samples coming in, at 2B per sample and 2 Chan - 
-  // for this algorithm we use 4x because the PCM writing logic for 16-bit divides by 4
-  const n = samplesPerBufferIn * 4   
-  //const freq = 440.0
-  const sampleRate = sr; // versus eg 44100
-  //let samplesGenerated = 0;
-
-  const sampleSize = bitDepth / 8             // 2 bytes
-  const blockAlign = sampleSize * channels    // 4 bytes
-  let numSamples = n / blockAlign | 0       // 4096*4/4 | 0
-  let data4 = bufferAlloc(numSamples * blockAlign)    // 4096 * 4
-  const amplitude = 32760; // Max amplitude for 16-bit audio
-
-  // the "angle" used in the function, adjusted for the number of
-  // channels and sample rate. This value is like the period of the wave.
-  //const t = (Math.PI * 2 * freq) / sampleRate
-
-  // Just testing logic for 440 Hz sounding output at selected parameters
-  // for (let i = 0; i < numSamples; i++) {
-  //   // fill with a simple sine wave at max amplitude
-  //   for (let channel = 0; channel < channels; channel++) {
-  //     const s = samplesGenerated + i
-  //     const val = Math.round(amplitude * Math.sin(t * s)) // sine wave
-  //     const offset = (i * sampleSize * channels) + (channel * sampleSize)
-  //     data4[`writeInt${bitDepth}LE`](val, offset)
-  //   }
-  // }
-
-  // Looks like upSample wants Int16Array (TypedArray) input
-  // and delivers an Int16Array (TypedArray) output
-
-  let upsampleRatio = 4;
-  // Uint8Array (Buffer) needs to be converted to Int16Array (TypedArray) to correctly capture the values as Int16
-  let upsampleInput = new Int16Array(dataByteToLengthIn.length);
-  for ( let j = 0; j < dataByteToLengthIn.length; j++) {
-    upsampleInput[j] = (dataByteToLengthIn[j]/255.0 - 0.5) * amplitude;
-  }
-  let upsampled = upsample(upsampleInput, upsampleRatio, false); // false => don't do a wave header thing
-  //data2 = upsampled;
-  data4 = bufferAlloc(numSamples * blockAlign * upsampleRatio); // should default to Buffer type which is Uint8Array
-  numSamples *= upsampleRatio;
-
-  let i = 0;
-  for (i = 0; i < numSamples; i++) {
-    // fill with a simple sine wave at max amplitude
-    for (let channel = 0; channel < channels; channel++) {
-      //const s = samplesGenerated + i
-      //const val = Math.round(amplitude * (data2[i]/255.0-0.5)) // or data2 became dataByteToLengthIn
-      //const val = Math.round(amplitude * (upsampled[i]/255.0-0.5)); // prior - not upsampled - not right length now for upsample
-      // now upsampled input has been biased to zero for signed input scaled to int16 so upsampled output is already zero biased and scaled
-      const val = upsampled[i]; // Math.round(upsampled[i]);      
-      let valFaded = i < 100 ? val * i/100 : val;
-       valFaded = i > numSamples - 100 ? valFaded * (numSamples - i)/100 : valFaded;
-      const offset = (i * sampleSize * channels) + (channel * sampleSize)
-      data4[`writeInt${bitDepth}LE`](valFaded, offset)
-      //console.log(i)
-    }
-  }
-  //console.log(i);
-  //console.log(data4);
+//   // Below isn't right ... just setting up
+//   // const stream = new Readable();
+//   // stream.bitDepth = 16
+//   // stream.channels = 2
+//   // stream.sampleRate = 44100
+//   // stream.samplesGenerated = 0
+//   // stream._read = read
+//   // stream.pipe(new PlainSpeaker());
 
 
 
-  // This works - just a first test - mono? - nope stereo - so samples are interleaved
-  // speaker.write(data3, () => {
-  //   speaker.destroy(); // close is not a function unless requiring plain old speaker
-  //   console.info('Speaker data written');
-  // });
+//   if ( !plainSpeaker ) {
 
-  //clearTimeout(speakerDestroyTimeoutId);
+//     // Create the Speaker instance
+//     // Works when using speaker.write and not the Readabe instance + pipe
+//     plainSpeaker = new PlainSpeaker({
+//       channels: 2,
+//       bitDepth: 16,
+//       sampleRate: sr // 3000 - 384000
+//     });
 
-  // This works too - sr has a nice big impact on how you hear it etc.
-  //plainSpeaker(data4);
-  //data4.pipe(plainSpeaker);
-  //plainSpeaker.open()
-  //data5 = Buffer.concat([data4, data4, data4]);
-  //data5 = Buffer.alloc(samplesToPlay * blockAlign, 0, Int16Array);
-  //data4.copy(data5, 0, 0); // copy all of data4 aka 4096 into the larger data5
-  //isReady = false; // becomes true again after drain responder
-  //plainSpeaker.push(data4); //.write(data5, () => {
-  //let data6 = Buffer.alloc(data4);
-  //let upsampledData = upsample(data4, 4);
-  //upsampledData.copy(data5);
-  plainSpeaker.write(data4);
-  //plainSpeaker.write(Buffer.from(upsampledData));
-    //speaker.flush();
-    // speakerDestroyTimeoutId = setTimeout( function() {
-    //    speaker.destroy(); // close is not a function unless requiring plain old speaker
-    //    speaker = null;
-    //    console.log('speaker destroyed');
-    // }, timeoutMs + 1000);
-    //console.info('Speaker data written');
-  //   setTimeout( function() {
-  //     plainSpeaker.close();
-  //   }, 1000)
-  //});
+//     plainSpeaker.on('open', () => {
+//       console.log('Speaker open');
+//     })
 
-  // not working yet
-  //stream.push(data4);
+//     plainSpeaker.on('flush', () => {
+//       console.log('Speaker flush');
+//     });
 
-}
+//     plainSpeaker.on('close', () => {
+//       console.log('Speaker close');
+//       //isReady = true; // nope
+//     });
+
+//     plainSpeaker.on('end', () => {
+//       console.log('Speaker end');
+//     });
+
+//     plainSpeaker.on('drain', () => {
+//       //console.log('Speaker drain'); // this one actually does fire at the end of a played buffer
+//       //isReady = true; // naw that happens too soon
+//     });
+
+//     plainSpeaker.on('finish', () => {
+//       console.log('Speaker finish');
+//     });
+
+//   } // speaker is not falsy
+
+
+//   // Just rudimentary testing, and this Buffer usage is deprecated still ...
+//   // Just add 1 sample since incoming data is 4095 bytes
+//   // TODO method-ize for any not 2n length
+//   // Values are 0 to 255
+//   dataByteToLengthIn = Buffer.alloc(samplesPerBufferIn, 0, Uint8Array); // Buffer.concat([new Buffer(1), data]);
+//   data.copy(dataByteToLengthIn, 0, 0); // last param omitted as default is to copy the whole source
+//   //data3 = Buffer.from(new Uint16Array(data2));
+
+
+//   // Test values
+//   // https://github.com/TooTallNate/node-speaker/blob/master/examples/sine.js
+//   const bitDepth = 16
+//   const channels = 2
+//   // For 4095 or 6 samples coming in, at 2B per sample and 2 Chan - 
+//   // for this algorithm we use 4x because the PCM writing logic for 16-bit divides by 4
+//   const n = samplesPerBufferIn * 4   
+//   //const freq = 440.0
+//   const sampleRate = sr; // versus eg 44100
+//   //let samplesGenerated = 0;
+
+//   const sampleSize = bitDepth / 8             // 2 bytes
+//   const blockAlign = sampleSize * channels    // 4 bytes
+//   let numSamples = n / blockAlign | 0       // 4096*4/4 | 0
+//   let data4 = bufferAlloc(numSamples * blockAlign)    // 4096 * 4
+//   const amplitude = 32760; // Max amplitude for 16-bit audio
+
+//   // the "angle" used in the function, adjusted for the number of
+//   // channels and sample rate. This value is like the period of the wave.
+//   //const t = (Math.PI * 2 * freq) / sampleRate
+
+//   // Just testing logic for 440 Hz sounding output at selected parameters
+//   // for (let i = 0; i < numSamples; i++) {
+//   //   // fill with a simple sine wave at max amplitude
+//   //   for (let channel = 0; channel < channels; channel++) {
+//   //     const s = samplesGenerated + i
+//   //     const val = Math.round(amplitude * Math.sin(t * s)) // sine wave
+//   //     const offset = (i * sampleSize * channels) + (channel * sampleSize)
+//   //     data4[`writeInt${bitDepth}LE`](val, offset)
+//   //   }
+//   // }
+
+//   // Looks like upSample wants Int16Array (TypedArray) input
+//   // and delivers an Int16Array (TypedArray) output
+
+//   let upsampleRatio = 4;
+//   // Uint8Array (Buffer) needs to be converted to Int16Array (TypedArray) to correctly capture the values as Int16
+//   let upsampleInput = new Int16Array(dataByteToLengthIn.length);
+//   for ( let j = 0; j < dataByteToLengthIn.length; j++) {
+//     upsampleInput[j] = (dataByteToLengthIn[j]/255.0 - 0.5) * amplitude;
+//   }
+//   let upsampled = upsample(upsampleInput, upsampleRatio, false); // false => don't do a wave header thing
+//   //data2 = upsampled;
+//   data4 = bufferAlloc(numSamples * blockAlign * upsampleRatio); // should default to Buffer type which is Uint8Array
+//   numSamples *= upsampleRatio;
+
+//   let i = 0;
+//   for (i = 0; i < numSamples; i++) {
+//     // fill with a simple sine wave at max amplitude
+//     for (let channel = 0; channel < channels; channel++) {
+//       //const s = samplesGenerated + i
+//       //const val = Math.round(amplitude * (data2[i]/255.0-0.5)) // or data2 became dataByteToLengthIn
+//       //const val = Math.round(amplitude * (upsampled[i]/255.0-0.5)); // prior - not upsampled - not right length now for upsample
+//       // now upsampled input has been biased to zero for signed input scaled to int16 so upsampled output is already zero biased and scaled
+//       const val = upsampled[i]; // Math.round(upsampled[i]);      
+//       let valFaded = i < 100 ? val * i/100 : val;
+//        valFaded = i > numSamples - 100 ? valFaded * (numSamples - i)/100 : valFaded;
+//       const offset = (i * sampleSize * channels) + (channel * sampleSize)
+//       data4[`writeInt${bitDepth}LE`](valFaded, offset)
+//       //console.log(i)
+//     }
+//   }
+//   //console.log(i);
+//   //console.log(data4);
+
+
+
+//   // This works - just a first test - mono? - nope stereo - so samples are interleaved
+//   // speaker.write(data3, () => {
+//   //   speaker.destroy(); // close is not a function unless requiring plain old speaker
+//   //   console.info('Speaker data written');
+//   // });
+
+//   //clearTimeout(speakerDestroyTimeoutId);
+
+//   // This works too - sr has a nice big impact on how you hear it etc.
+//   //plainSpeaker(data4);
+//   //data4.pipe(plainSpeaker);
+//   //plainSpeaker.open()
+//   //data5 = Buffer.concat([data4, data4, data4]);
+//   //data5 = Buffer.alloc(samplesToPlay * blockAlign, 0, Int16Array);
+//   //data4.copy(data5, 0, 0); // copy all of data4 aka 4096 into the larger data5
+//   //isReady = false; // becomes true again after drain responder
+//   //plainSpeaker.push(data4); //.write(data5, () => {
+//   //let data6 = Buffer.alloc(data4);
+//   //let upsampledData = upsample(data4, 4);
+//   //upsampledData.copy(data5);
+//   plainSpeaker.write(data4);
+//   //plainSpeaker.write(Buffer.from(upsampledData));
+//     //speaker.flush();
+//     // speakerDestroyTimeoutId = setTimeout( function() {
+//     //    speaker.destroy(); // close is not a function unless requiring plain old speaker
+//     //    speaker = null;
+//     //    console.log('speaker destroyed');
+//     // }, timeoutMs + 1000);
+//     //console.info('Speaker data written');
+//   //   setTimeout( function() {
+//   //     plainSpeaker.close();
+//   //   }, 1000)
+//   //});
+
+//   // not working yet
+//   //stream.push(data4);
+
+// }
 
 
 
@@ -538,42 +540,43 @@ var playPopoutOpen = function() {
 let lastChanBase1 = 0;
 let chanArray = [];
 let chansPlayed = [];
-var roundRobbinPlayData = function(chan, data) {
-  //console.log(`audio chan ${chan}`);
-  //let play = isReady;
-  //console.log(`chanArray ${chanArray}`);
-  //console.log(`chansPlayed ${chansPlayed}`);
-  //console.log(`roundRobbinPlayData isReady: ${isReady}`);
-  if ( !chanArray.includes(chan) ) {
+//Speaker Removal Test
+// var roundRobbinPlayData = function(chan, data) {
+//   //console.log(`audio chan ${chan}`);
+//   //let play = isReady;
+//   //console.log(`chanArray ${chanArray}`);
+//   //console.log(`chansPlayed ${chansPlayed}`);
+//   //console.log(`roundRobbinPlayData isReady: ${isReady}`);
+//   if ( !chanArray.includes(chan) ) {
 
-    // First gather all the channels in their particular order
-    chanArray.push(chan);
+//     // First gather all the channels in their particular order
+//     chanArray.push(chan);
 
-  } else { 
+//   } else { 
 
-    if ( !chansPlayed.includes(chan) ) {
+//     if ( !chansPlayed.includes(chan) ) {
 
-      if ( isNextChan(chan) && isReady ) {
-        // play it
-        //console.log(`playing next chan ${chan}`);
-        playData(data);
-        // store it
-        AudioFdbkEmitter.emit('audioFdbk:playingSoundForChanNum', {
-          "chanNum": chan,
-          "timeoutMs": timeoutMs
-        })
-        chansPlayed.push(chan);
-      }
+//       if ( isNextChan(chan) && isReady ) {
+//         // play it
+//         //console.log(`playing next chan ${chan}`);
+//         playData(data);
+//         // store it
+//         AudioFdbkEmitter.emit('audioFdbk:playingSoundForChanNum', {
+//           "chanNum": chan,
+//           "timeoutMs": timeoutMs
+//         })
+//         chansPlayed.push(chan);
+//       }
 
-      if ( chansPlayed.length === chanArray.length ) {
-        chansPlayed = [];
-      }
+//       if ( chansPlayed.length === chanArray.length ) {
+//         chansPlayed = [];
+//       }
 
-    }
+//     }
 
-  }
+//   }
 
-}
+// }
 
 
 var isNextChan = function(chan) {
@@ -622,9 +625,11 @@ var okToPlay = function() {
 
 module.exports = {
   playOpen: playOpen, // don't include () - this will execute immediately!
-  playData: playData,
+  //Speaker Removal Test
+  //playData: playData,
   playPopoutOpen: playPopoutOpen,
-  roundRobbinPlayData: roundRobbinPlayData,
+  //Speaker Removal Test
+  //roundRobbinPlayData: roundRobbinPlayData,
   reset: reset,
   AudioFdbkEmitter: AudioFdbkEmitter,
   SetSoundMutedState: SetSoundMutedState
