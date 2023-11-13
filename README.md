@@ -36,6 +36,8 @@ Pre-pre-alpha type of release at this point.  Exploratory.
 Developed primarily on Mac, so not all features have been tested
 on Win.
 
+Note: Devolpment post version 0.0.18 has been on Windows. Versions 0.0.19 and up are currently untested on Mac
+
 Under heavy development, exploratory.  Rapidly committed
 updates.
 
@@ -56,7 +58,7 @@ Much of which comes from excellent information available on the web, and is note
 
 ### Node.js Version(s) ###
 
-Curently, locked to 10.18.0 as the tested max version.
+Curently, locked to 12.18.3 as the tested max version.
 Per https://stackoverflow.com/questions/29349684/how-can-i-specify-the-required-node-js-version-in-package-json
 we could lock the node version with something like:
 `{ "engines" : { "node" : "=10.18.0" } }`
@@ -74,6 +76,35 @@ Seems to still rebuild/install ok on darwin and win32.
 
 
 ### Revisions
+
+- **0.0.23**
+  - Reverted to start and stop buttons for data capture (Same as it used to look pre v22)
+  - Added live waveform feature to directory select button
+  - Combined range slider and text field input options for control port configuration
+  - Startup sound and data capture sounds were removed due to instability caused by the node speaker module
+
+- **0.0.22**
+  - added new button to data capture ui that starts a live waveform scan that displays the data to the charts but does not write to files
+    - feature is currently slow to display all four charts
+
+- **0.0.21**
+  - fixed issue that broke waveform processing thickness values
+  - data capture ui starts with multiwaveform accordion expanded
+  - serial port selection accordion now hidden by default.
+    - visiblity can be toggled with a button in the utitlities section of settings
+  - removed button to switch between UIs
+  - moved footer buttons to sidebar in button left corner of application window
+
+- **0.0.20**
+  - Updated Plugins Folder to include waveform live processing
+  - Updated Default UI to Data Capture Focused
+  - Reorganized Data Capture UI
+  
+- **0.0.19**
+  - Moved restart button and settings buttons to a footer
+  - added electron-builder module to implement auto update feature to Dacqman.
+    - module auto detects when a new update has been published to github.
+    - Users are prompted with a notification that asks if they want to install the update immediately and restart dacqman or wait until the software is closed.
 
 - **0.0.18** 
   - merged UpdateSerialPort branch to master with bumps of several packages to engine node 12.8.1 electron 7.3.3 serialport 10.5.0 using alternate ftdi-d2xx (wrapped) etc etc - see package.json changes
