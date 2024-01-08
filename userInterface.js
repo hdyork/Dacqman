@@ -436,9 +436,9 @@ DirectorySelectClick = (event, jsonStart) => {
     $('#capture_ui_current_filename').removeClass("hide");
   }
 
-  var d = $('#capture_ui_directory_select').find("input").val();
+  // var d = $('#capture_ui_directory_select').find("input").val();
 
-  controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d );
+  // controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d );
 
   // console.error("jsonButtonTest, DirectorySelectClick: command: " + JSON.stringify(jsonStart.command) + " returnDataTo: " + JSON.stringify(jsonStart.returnDataTo) + " jsonStart: " + JSON.stringify(jsonStart) + " d: " + JSON.stringify(d));
 
@@ -610,7 +610,7 @@ UserInterface.Ready = () => {
 UISetupMultipaneCharts = ( nChans ) => {
 
   //var nChans = GetNumberOfChannels() || 4; // Common usage to date is 4 as a reasonable default
-  var classes = "col s12 m6 l4"; // This is/was the default for 8 channels
+  var classes = "col s12 m6 l3"; // This is/was the default for 8 channels
   if ( nChans == 4 ) {
     classes = "col s12 m6"; // here since no l specified it will max at 6-cols = 2 per row
   }

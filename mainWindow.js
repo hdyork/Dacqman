@@ -1072,7 +1072,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
     if ( numChansToSetup != $('#divMultichart > div').length ) {
       console.warn(`numChans does not equal number of charts in the multichart area`);
     }
-    let chartClasses = $('#divMultichart > div').attr('class') || 'col s12 m6 l4';
+    let chartClasses = $('#divMultichart > div').attr('class') || 'col s12 m6 l3';
 
     // HOOKALERT04
     ipcRenderer.send('createMultiWfsWindow', {
@@ -1426,7 +1426,7 @@ var setupMultipaneCharts = function (parentEle, nChans, chartDivClasses) {
   // single column for charts? etc.
 
   // How many charts to display per row for particular @media size
-  var divClasses = chartDivClasses ? chartDivClasses : "col s12 m6 l4";
+  var divClasses = chartDivClasses ? chartDivClasses : "col s12 m6 l3";
 
   var i;
   multiWfs = [];
