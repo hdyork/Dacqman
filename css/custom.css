@@ -801,4 +801,42 @@ main {
 #serialPortSelectionAccordion {
   display: none;
 }
+
+#myCheckbox {
+  position: relative;
+  left: 40px;
+  z-index: 9999;
+}
+
+label[for="myCheckbox"] {
+  color: black;
+  left: 280px;
+  position: absolute;
+  cursor: pointer;
+}
+
+label[for="myCheckbox"]::before {
+  content: "";
+  position: absolute;
+  left: -15px;
+  width: 12px;
+  height: 12px;
+  border: 1px solid black;
+  background: gray;
+}
+
+label[for="myCheckbox"]::after {
+  content: "";
+  position: absolute;
+  left: -13px;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  background: black;
+  display: none;
+}
+
+#myCheckbox:checked + label::after {
+  display: block;
+}
 /* End: Chart */

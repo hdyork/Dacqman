@@ -2062,8 +2062,8 @@ var copyCustomCommandsToLocalFile = function() {
   // and indicating that you used to be able to customize the filename and that
   // you still could by updating the code here if you like
   var srcFilePaths = [];
-  srcFilePaths.push({ 'key': 'customCommandsFilePath', 'value': path.join(a, prefs.customCommandsFilePathPackaged) });
-  srcFilePaths.push({ 'key': 'customCaptureOptionsFilePath', 'value': path.join(a, prefs.customCaptureOptionsFilePathPackaged) });
+  srcFilePaths.push({ 'key': 'customCommandsFilePath', 'value': path.join(a, prefs[`customCommandsFilePathPackaged_${prefs.xducerNumber}xd`]) });
+  srcFilePaths.push({ 'key': 'customCaptureOptionsFilePath', 'value': path.join(a, prefs[`customCaptureOptionsFilePathPackaged_${prefs.xducerNumber}xd`]) });
 
   var calFilePaths = [];
   var calFileSrcDir = path.join(a, prefs.customTransducerCalibrationFilesDirectoryPackaged);

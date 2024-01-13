@@ -42,8 +42,10 @@ const settingsDefaults = {
   windowBounds: { width: 800, height: 900 },
     customCommandsFilePath: './user-data/control-port-buttons.json', // TODO - move to constants?
     customCommandsFilePathPackaged: './user-data/control-port-buttons.json',
-    customCaptureOptionsFilePath: './user-data/capture-options.json',
-    customCaptureOptionsFilePathPackaged: './user-data/capture-options.json',
+    customCaptureOptionsFilePath_4xd: './user-data/capture-options_4xd.json',
+    customCaptureOptionsFilePathPackaged_4xd: './user-data/capture-options_4xd.json',
+    customCaptureOptionsFilePath_8xd: './user-data/capture-options_8xd.json',
+    customCaptureOptionsFilePathPackaged_8xd: './user-data/capture-options_8xd.json',
     customTransducerCalibrationFilesDirectory: './user-data/transducer-calibration-files/',
     customTransducerCalibrationFilesDirectoryPackaged: './user-data/transducer-calibration-files/',
   interfaceDefault: 'dataCaptureFocused',
@@ -63,6 +65,7 @@ const settingsDefaults = {
   , collapsedCollapsibles: []               // explicitly user-click collapsed collapsibles
   , openedCollapsibles: []                  // explicitely user-click opened collapsibles
   , soundMutedState: 'unmuted'
+  , xducerNumber: 4                         // 4 or 8
 };
 // HOOKALERT03
 // customControlSettingsJson:
