@@ -2484,8 +2484,10 @@ class CaptureDataFileOutput {
     // TODO there is probably a problem with the try/catch inside the promise
     return new Promise((resolve, reject) => {
 
+      console.error("capture-data.js: loadCustomCaptureOptionsPromise: prefs: " + JSON.stringify(prefs.xducerNumber));
+
       // What happens if custom file and user deletes it?
-      var customCaptureOptionsFilePath = prefs.customCaptureOptionsFilePath || '';
+      customCaptureOptionsFilePath = prefs[`customCaptureOptionsFilePath_${prefs.xducerNumber}xd`] || '';
       fs.stat(customCaptureOptionsFilePath || '', function (err, stat) {
         if ( !err ) {
           console.log("Loading customCaptureOptionsFilePath: " + customCaptureOptionsFilePath);
@@ -2494,7 +2496,7 @@ class CaptureDataFileOutput {
         } else {
           console.log("Filepath in preferences for customCaptureOptionsFilePath, " + customCaptureOptionsFilePath + ", does not exist ... defaulting to packaged fallback");
           try {
-            customCaptureOptionsJson = require(prefs.customCaptureOptionsFilePathPackaged);
+            customCaptureOptionsJson = require(prefs[`customCaptureOptionsFilePathPackaged_${prefs.xducerNumber}xd`]);
             resolve(customCaptureOptionsJson);
           } catch (e) {
             console.log("Problem loading customCaptureOptionsFilePathPackaged..." + e);

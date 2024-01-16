@@ -46,13 +46,15 @@ function DataChart({
   this._reqId = null;
   this._chartBuffer = chartBuffer;
   this._dataLen = dataLen; // 4095;
+  this._context = null;
 
   //_self = this;
 
-  console.log("New bigWfDataChart for id name: " + this.parentElementIdName);
-  console.log(this._chartBuffer.length);
+   // Get the dimensions of the parent element
+   var parentElement = document.getElementById(parentElementIdName);
+   var parentWidth = parentElement.clientWidth;
 
-  // For tall graphs, use for 500 chartHeight below, with the .svg-container-tall class instead of .svg-container class
+  // For tall graphs, use for 500 chartHeight below, with the .canvas-container-tall class instead of .canvas-container class
   var chartHeight = 300 //500 // was 300 // The larger height chart aka 500 goes along with the 560px width change in the custom.css until better implemented
   var chartWidth = 900
   var _margin = 20
@@ -62,19 +64,55 @@ function DataChart({
 
   var strokeWidth = 1;
 
+  // Create a canvas element
+  var canvasContainer = d3.select('#' + this._parentElementIdName)
+  .append("div")
+  .classed("canvas-container", true)
+  .style("position", "relative")
+  .style("width", "100%")
+  .style("height", "0")
+  .style("padding-bottom", "33.33%"); // This sets the aspect ratio
+
+  var canvas = canvasContainer
+    .append("canvas")
+    .classed("canvas-content-responsive", true)
+    .style("position", "absolute")
+    .style("width", "100%")
+    .style("height", "100%")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .node();
+  
+  // Get the context
+  this._context = canvas.getContext('2d');
+  // Translate the context to respect the margins
+  //this._context.translate(margin.left, margin.top);
+
+  console.log("New bigWfDataChart for id name: " + this._parentElementIdName);
+  console.log(this._chartBuffer.length);
+
   // Please See:
   // https://stackoverflow.com/questions/57007378/d3-zoom-and-drag-with-svg-axes-and-canvas-chart
   // As to why we are specifying all three of these below:
   var zoom;
   zoom = d3.zoom()
-    .scaleExtent([1, 20])
+    .scaleExtent([1, 10])
     // The pair of the next two together is what allows us the sensible
     // implementation of zoom and pan extents:
     //              [[left, top] , [right, bottom]]
     .translateExtent([[0,0],[chartWidth, chartHeight]])
     .extent([[0,0],[chartWidth, chartHeight]])
-    ;
+    .on("zoom", function(event) {
+      // This is the zoom event handler
+      // event.transform contains the current zoom transform
+      currentTransform = d3.event.transform;
 
+      // Adjust the transform to account for the margins
+      // currentTransform = currentTransform.translate(margin.left + margin.right, 0);
+
+      // Redraw the chart with the new transform
+      redraw(currentTransform);
+    });
 
 
 
@@ -88,26 +126,22 @@ function DataChart({
   var xScale;
   xScale = d3.scaleLinear()
       .domain([0, n-1]) // input
-      .range([0, width]); // output
+      .range([25, width]); // output
 
   //
   var yInputMaxVal = 255;
   var yScale; 
   yScale = d3.scaleLinear()
       .domain([0, yInputMaxVal]) // input
-      .range([height, 0]); // output
+      .range([height - 15, 0]); // output
 
-  // Y Axis Grid Setup
-  //var yAxisGrid = d3.axisLeft(y).tickSize(-chartWidth).tickFormat('').ticks(10);
-
-
-  // d3 line generator'
-  var line;
-  line = d3.line()
-      .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-      .y(function(d) { return yScale(d); }) // yScale(d.y); }) // set the y values for the line generator
-      .curve(d3.curveMonotoneX) // apply smoothing to the line
-      ;
+  this._xPos = function(d, i) {
+    return xScale(i); // xScale is a D3 scale
+  };
+  
+  this._yPos = function(d) {
+    return yScale(d); // yScale is a D3 scale
+  };
 
   // Add some high freq low amp overlay to test semantic zoom
   // over geometric zoom ...
@@ -121,95 +155,115 @@ function DataChart({
     dataset.push(big + little);
   }
 
+  // Set up the canvas to be responsive and handle zoom and double-click events
+  d3.select(canvas)
+    .call(zoom)
+    .on("dblclick.zoom", null) // cancels double-clicking to zoom
+    .on("dblclick", ourDlbClick);
 
+  // The chart body will be drawn directly on the canvas using the context
 
+  var drawChart = (function(newXScale, newYScale) {
 
-  //var svg = d3.select('#chart')
-  var svg;
-  var svg = d3.select('#' + parentElementIdName)
-    .append("div")
-    .classed("svg-container", true)
-    .append("svg")
-    .attr("preserveAspectRatio", "xMinYMin meet")
-    .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
-    .classed("svg-content-responsive", true)
-    .call(zoom.on("zoom", zoomed))
-    .on("dblclick.zoom", null)          // cancels double-clicking to zoom
-    .on("dblclick", ourDlbClick)
-
-    .append("svg")
-    .attr("width", chartWidth) //width + margin.left + margin.right)
-    .attr("height", chartHeight) //height + margin.top + margin.bottom)
-
-    .append("g")
-    .classed("chartBody", true)
-    .attr("transform", "translate(" + (margin.left + margin.right) + "," + 0 + ")")
-    ;
-
-
-  // Trying above responsive svg, per:
-  // https://stackoverflow.com/questions/16265123/resize-svg-when-window-is-resized-in-d3-js
-  // as well as
-  // http://thenewcode.com/744/Make-SVG-Responsive
-
-
-  // X-axis in a group tag
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
-
+    // Y-axis minor grid lines
+    for (let i = 0; i <= 255/5; i++) {
+      if(i % 4 == 0 && i != 0) continue; // skip major grid lines
+      let y = newYScale(i * 5) + margin.top;
+      let x = newXScale(0) + margin.left;
+      this._context.beginPath();
+      this._context.moveTo(x, y);
+      this._context.lineTo(width, y);
+      this._context.strokeStyle = 'grey';
+      this._context.lineWidth = 0.2;
+      this._context.stroke();
+    }
   
-  // Y-axis in a group tag
-  svg.append("g")
-      .attr("class", "y axis-grid-minor")
-      .call(d3.axisLeft(yScale).tickSize(-chartWidth).tickFormat('').ticks(255/5));
-  svg.append("g")
-      .attr("class", "y axis-grid-major")
-      .call(d3.axisLeft(yScale).tickSize(-chartWidth).tickFormat('').ticks(10));
+    // Y-axis major grid lines
+    this._context.font = "8px Arial"; // Set the font size and family
+    this._context.textAlign = "right"; // Align the text to the right
+    this._context.textBaseline = "middle"; // Align the text vertically in the middle
   
+    for (let i = 0; i <= 255/20; i++) {
+      let y = newYScale(i * 20) + margin.top;
+      let x = newXScale(0) + margin.left;
+      this._context.beginPath();
+      this._context.moveTo(x - 25, y);
+      this._context.lineTo(width, y);
+      this._context.strokeStyle = 'grey';
+      this._context.lineWidth = 0.5;
+      this._context.stroke();
+      this._context.fillStyle = 'white';  // Set the text color to white
+  
+      // Add a label to the line
+      let label = (i * 20); // Start at 0 and count up by 20 each line
+      this._context.fillText(label, x - 25, y);
+    }
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+    // X-axis labels
+    for (let i = 0; i <= 4095/500; i++) {
+      let x = newXScale(i * 500);
+      let y = newYScale(0) + margin.top;
 
-  // Title
-  // It turned out a lot easier for our purposes to do this at the main
-  // function calling level, building it into the DOM elsewhere ...
-  /*svg.append("text")
-        .attr("x", (width / 2))
-        .attr("y", 15) // 0 - (margin.top / 2))
-        .attr("text-anchor", "middle")
-        .style("font-size", "1em")
-        //.style("text-decoration", "underline")
-        .classed("chart-title", true)
-        .text(title);
-        */
-  // Actually we'll do the title as a y-axis thing
-  /*svg.append("text")
-    .attr("class", "y label")
-    .attr("text-anchor", "middle")
-    //.attr("y", 6)
-    //.attr("y", 0 - height/2)
-    .attr("dy", "-2em")
-    .attr("transform", "rotate(-90)")
-    .attr("class", "dataChart-title")
-    .text(title);
-    */
+      if(i == 0) continue; // skip first label
+      this._context.beginPath();
+      this._context.moveTo(x - 25, y);
+      this._context.lineTo(x - 25, y + 15);
+      this._context.strokeStyle = 'grey'; // Set the line colour to grey
+      this._context.lineWidth = 0.5; // Set the line width to 0.5 pixels
+      this._context.stroke(); // Apply the stroke
+      this._context.textAlign = "center"; // Align the text to the right
+      this._context.fillStyle = 'white';  // Set the text color to white
 
-  // Data line in a path tag
-  svg.append("path")
-      .datum(dataset)
-      .attr("class", "line")
-      .attr("d", line)
-      .style("stroke-width", strokeWidth)
-      ;
+      // Add a label to the line
+      let label = i * 500; // Start at 0 and count up by 500 each line
+      this._context.fillText(label, x - 25, y + margin.bottom);
+    }
 
+    let x = newXScale(0) + margin.left;
+    let y = newYScale(0) + margin.top;
 
+    // Y-axis
+    this._context.beginPath();
+    this._context.moveTo(x, y);
+    this._context.lineTo(x, margin.top);
+    this._context.strokeStyle = 'grey';
+    this._context.lineWidth = 1;
+    this._context.stroke();
+  
+    // X-axis
+    this._context.beginPath();
+    this._context.moveTo(x, y);
+    this._context.lineTo(newXScale(4095) + margin.left, y);
+    this._context.strokeStyle = 'grey';
+    this._context.lineWidth = 1;
+    this._context.stroke();
+  
+    // Draw data line
+    this._context.beginPath();
+    dataset.forEach((d, i) => {
+      var x = newXScale(i) + margin.left;
+      var y = newYScale(d) + margin.top;
+      this._context.lineWidth = 1;
+      this._context.strokeStyle = '#ffab00'; // match .line stroke color
+      if (i === 0) {
+        this._context.moveTo(x, y);
+      } else {
+        this._context.lineTo(x, y);
+      }
+    });
+    this._context.stroke();
+  }).bind(this);
 
+  drawChart(xScale, yScale);
 
+  // Set the stroke width
+  this._context.lineWidth = strokeWidth;
 
+  // Begin the path
+  this._context.beginPath();
 
+  // Stroke the path
+  this._context.stroke();
 
   let rebuildChart = () => { // was function rebuildChart(that) {}
 
@@ -220,24 +274,6 @@ function DataChart({
     xScale = d3.scaleLinear()
         .domain([0, n-1]) // input
         .range([0, width]); // output
-
-    //
-    //var yInputMaxVal = 255;
-    //var yScale; 
-    // yScale = d3.scaleLinear()
-    //     .domain([0, yInputMaxVal]) // input
-    //     .range([height, 0]); // output
-
-    // Y Axis Grid Setup
-    //var yAxisGrid = d3.axisLeft(y).tickSize(-chartWidth).tickFormat('').ticks(10);
-
-
-    // d3 line generator
-    // line = d3.line()
-    //     .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-    //     .y(function(d) { return yScale(d); }) // yScale(d.y); }) // set the y values for the line generator
-    //     .curve(d3.curveMonotoneX) // apply smoothing to the line
-    //     ;
 
     // Add some high freq low amp overlay to test semantic zoom
     // over geometric zoom ...
@@ -254,74 +290,74 @@ function DataChart({
     }
     console.log("dataset len " + dataset.length );
 
+    // Clear the canvas before drawing the line
+    this._context.clearRect(0, 0, canvas.width, canvas.height);
 
-    //svg = d3.select('#' + parentElementIdName)
-    // .append("div")
-    // .classed("svg-container", true)
-    // .append("svg")
-    // .attr("preserveAspectRatio", "xMinYMin meet")
-    // .attr("viewBox", "0 0 " + chartWidth + " " + chartHeight)
-    // .classed("svg-content-responsive", true)
-    // .call(zoom.on("zoom", zoomed))
-    // .on("dblclick.zoom", null)          // cancels double-clicking to zoom
-    // .on("dblclick", ourDlbClick)
-
-    // .append("svg")
-    // .attr("width", chartWidth) //width + margin.left + margin.right)
-    // .attr("height", chartHeight) //height + margin.top + margin.bottom)
-
-    // .append("g")
-    // .classed("chartBody", true)
-    // .attr("transform", "translate(" + (margin.left + margin.right) + "," + 0 + ")")
-    // ;
-
-    // X-axis in a group tag
-    // svg.append("g")
-    // .attr("class", "x axis")
-    // .attr("transform", "translate(0," + height + ")")
-    // .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
-    //svg.selectAll("x axis").call(xScale); //d3.axisBottom().scale(xScale);
-    //xScale.domain([0, n-1]);
-    //console.log(xScale);
-    // wow.
-    svg.select("g.x.axis").call(d3.axisBottom().scale(xScale))
-
-    // Y-axis in a group tag
-    // svg.append("g")
-    //   .attr("class", "y axis-grid-minor")
-    //   .call(d3.axisLeft(yScale).tickSize(-chartWidth).tickFormat('').ticks(255/5));
-    // svg.append("g")
-    //   .attr("class", "y axis-grid-major")
-    //   .call(d3.axisLeft(yScale).tickSize(-chartWidth).tickFormat('').ticks(10));
-
-    // svg.append("g")
-    //   .attr("class", "y axis")
-    //   .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
-
-    // Data line in a path tag
-    // svg.append("path")
-    // .datum(dataset)
-    // .attr("class", "line")
-    // .attr("d", line)
-    // .style("stroke-width", strokeWidth)
-    // ;
-    //console.log(dataset);
-
-    svg.selectAll("path.line").remove();
-    svg.append("path")
-    .datum(dataset)
-    .attr("class", "line")
-    .attr("d", line)
-    //.style("stroke-width", strokeWidth)
-    ;
-
+    // Generate the line
+    drawChart(xScale, yScale);
   }
 
 
+  // Define a zoom transform
+  var zoomTransform = d3.zoomIdentity;
+  var currentTransform = zoomTransform;
+
+  // Define a function to redraw the chart
+  var redraw = (function(transform) {
+
+    if(transform == null) {
+      transform = d3.zoomIdentity;
+    }
+  
+    // Create new scale objects based on the zoom transform
+    var newXScale = transform.rescaleX(xScale);
+    var newYScale = transform.rescaleY(yScale);
+  
+    // Clear the canvas
+    this._context.clearRect(0, 0, canvas.width, canvas.height);
+  
+    // Save the current context state
+    this._context.save();
+
+      // Apply the transform to the context
+    this._context.translate(transform.x, transform.y);
+    this._context.scale(transform.k, transform.k);
+  
+    // Redraw the chart with the new scales
+    drawChart(newXScale, newYScale);
+  
+    // Restore the context state
+    this._context.restore();
+
+  }).bind(this);
+
+  // Define a function to reset the zoom
+  var resetZoom = (function() {
+
+    // Reset the zoom behavior's state
+    d3.select(canvas).call(zoom.transform, d3.zoomIdentity);
+
+    // Redraw the chart
+    redraw(d3.zoomIdentity);
+  }).bind(this);
+
+  // Define a function to generate a new dataset for testing
+  // function generateDataset() {
+  //   dataset = [];
+  //   var j;
+  //   var big;
+  //   var little;
+  //   for ( j = 0; j < n; j++ ) {
+  //     big = 126 * Math.sin(2*3.14159/2500.*j*4) + 127; // n => 2500 to add cycles to 4095 from 2500
+  //     little = 2 * Math.sin(2*3.14159/2500.*j*800+2); // same as above
+  //     dataset.push((big + little) * Math.random());
+  //   }
+  //   return dataset;
+  // }
 
   function ourDlbClick() {
-    svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.scale(1));
-    //.translate(margin.left + margin.right,0)); // already done in the zoomed() now
+    
+    resetZoom();
 
     // TODO BUG there is still a bug where after reset, the next (scroll wheel at least)
     // attempt to zoom snaps right back to the last transform/zoom and thus doesn't make
@@ -331,48 +367,13 @@ function DataChart({
 
   }
 
-
-  var currentTransform;
-  function zoomed() {
-    //console.log(d3.event.translate);  // v3
-    //console.log(d3.event.scale);      // v3
-    //console.log(d3.event.transform);    // v5
-    currentTransform = d3.event.transform;
-
-    // Because we translate the chart above, we should do:
-    currentTransform = currentTransform.translate(margin.left + margin.right,0);
-
-    svg.attr("transform", currentTransform);
-    d3.axisBottom().scale(currentTransform.rescaleX(xScale));
-    d3.axisLeft().scale(currentTransform.rescaleY(yScale));
-
-    svg.selectAll("path.line")
-      .style("stroke-width", strokeWidth / currentTransform.k)
-      ;
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-  // From previous explicit call to update data with provided data set
-  // versus using requestAnimationFrame...
   async function update(newdata) {
-
-    svg.selectAll("path.line").remove();
-    svg.append("path")
-        .datum(newdata) // 10. Binds data to the line
-        .attr("class", "line") // Assign a class for styling
-        .attr("d", line)
-        ;
-  } // update
+    // Update the data
+    dataset = newdata;
+  
+    // Redraw the chart
+    redraw();
+  }
 
 
 
@@ -402,14 +403,27 @@ function DataChart({
           thisStrokeWidth = strokeWidth / currentTransform.k;
         }
 
-        // Get the latest data snapshot
-        svg.selectAll("path.line").remove();
-        svg.append("path")
-          .datum(this._chartBuffer) // if you use this. here, the intended functionality of course breaks due to structure implemented here
-          .attr("class", "line")
-          .attr("d", line)
-          .style("stroke-width", thisStrokeWidth)
-          ;
+        // Clear the canvas
+        this._context.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Save the current context state
+        this._context.save();
+        
+        // Apply the zoom transform
+        this._context.translate(currentTransform.x, currentTransform.y);
+        this._context.scale(currentTransform.k, currentTransform.k);
+        
+        // Adjust the stroke width based on the zoom level
+        this._context.lineWidth = thisStrokeWidth;
+        
+        // Draw the chart
+        dataset = this._chartBuffer;
+        this._context.beginPath();
+        drawChart(xScale, yScale);
+        this._context.stroke();
+        
+        // Restore the context state
+        this._context.restore();
 
           freshData = false;
           //console.log('freshData = false');

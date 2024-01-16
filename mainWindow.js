@@ -45,7 +45,6 @@ const { UserInterface : YouFace } = require('./userInterface.js');
 
 const audioFdbkEmitter = require('./audioFdbk.js').AudioFdbkEmitter;
 
-
 // <PLUGINS>
 
 var plugins;
@@ -939,6 +938,15 @@ let getPrefsPromise = () => {
     if ( !prefs ) {
       reject("getPrefsPromise: failed to get prefs");
     } else {
+      let xdN = prefs.xducerNumber;
+
+      // Check the value of xdN and update the checkbox
+      let checkbox = document.getElementById('myCheckbox');
+      if (xdN === 4) {
+        checkbox.checked = false;
+      } else if (xdN === 8) {
+        checkbox.checked = true;
+      }
       resolve(prefs);
     }
   });
@@ -1072,7 +1080,7 @@ $(document).ready(function(){ // is DOM (hopefully not img or css - TODO vfy jQu
     if ( numChansToSetup != $('#divMultichart > div').length ) {
       console.warn(`numChans does not equal number of charts in the multichart area`);
     }
-    let chartClasses = $('#divMultichart > div').attr('class') || 'col s12 m6 l4';
+    let chartClasses = $('#divMultichart > div').attr('class') || 'col s12 m6 l3';
 
     // HOOKALERT04
     ipcRenderer.send('createMultiWfsWindow', {
@@ -1426,7 +1434,7 @@ var setupMultipaneCharts = function (parentEle, nChans, chartDivClasses) {
   // single column for charts? etc.
 
   // How many charts to display per row for particular @media size
-  var divClasses = chartDivClasses ? chartDivClasses : "col s12 m6 l4";
+  var divClasses = chartDivClasses ? chartDivClasses : "col s12 m6 l3";
 
   var i;
   multiWfs = [];
@@ -2062,8 +2070,8 @@ var copyCustomCommandsToLocalFile = function() {
   // and indicating that you used to be able to customize the filename and that
   // you still could by updating the code here if you like
   var srcFilePaths = [];
-  srcFilePaths.push({ 'key': 'customCommandsFilePath', 'value': path.join(a, prefs.customCommandsFilePathPackaged) });
-  srcFilePaths.push({ 'key': 'customCaptureOptionsFilePath', 'value': path.join(a, prefs.customCaptureOptionsFilePathPackaged) });
+  srcFilePaths.push({ 'key': 'customCommandsFilePath', 'value': path.join(a, prefs[`customCommandsFilePathPackaged_${prefs.xducerNumber}xd`]) });
+  srcFilePaths.push({ 'key': 'customCaptureOptionsFilePath', 'value': path.join(a, prefs[`customCaptureOptionsFilePathPackaged_${prefs.xducerNumber}xd`]) });
 
   var calFilePaths = [];
   var calFileSrcDir = path.join(a, prefs.customTransducerCalibrationFilesDirectoryPackaged);
@@ -2191,3 +2199,30 @@ ipcRenderer.on('updateReady', () => {
   // When the user chooses to restart the app, send an event back to the main process.
   ipcRenderer.send('restartApp');
 });
+
+
+  window.onload = function() {
+
+    prefs = ipcRenderer.sendSync('prefs:getPrefs') || {};
+
+    // Get the checkbox element
+    const checkbox = document.getElementById('myCheckbox');
+  
+    // Add an event listener for the 'change' event
+    checkbox.addEventListener('change', function() {
+      // This function will be called whenever the checkbox is clicked
+  
+      // Check if the checkbox is checked
+      if (this.checked) {
+        // The checkbox is checked
+        // Switch to 8 transducer scan
+        // console.error('Checkbox is checked');
+        ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':8});
+      } else {
+        // The checkbox is not checked
+        // Switch to 4 transducer scan
+        ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':4});
+        // console.error('Checkbox is not checked');
+      }
+    });
+  };

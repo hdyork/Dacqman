@@ -13,7 +13,7 @@
 //
 
 // TODO this could become an inquiry on instantiation to check actual hardware / platform implementation
-const maxBufferLen = Math.pow(2,16);
+const maxBufferLen = Math.pow(2,17);
 
 // TODO add to constructor and/or get/set etc.
 const pollingIntervalMs = 40;   
