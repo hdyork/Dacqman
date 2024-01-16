@@ -45,7 +45,6 @@ const { UserInterface : YouFace } = require('./userInterface.js');
 
 const audioFdbkEmitter = require('./audioFdbk.js').AudioFdbkEmitter;
 
-
 // <PLUGINS>
 
 var plugins;
@@ -939,6 +938,15 @@ let getPrefsPromise = () => {
     if ( !prefs ) {
       reject("getPrefsPromise: failed to get prefs");
     } else {
+      let xdN = prefs.xducerNumber;
+
+      // Check the value of xdN and update the checkbox
+      let checkbox = document.getElementById('myCheckbox');
+      if (xdN === 4) {
+        checkbox.checked = false;
+      } else if (xdN === 8) {
+        checkbox.checked = true;
+      }
       resolve(prefs);
     }
   });
@@ -2191,3 +2199,30 @@ ipcRenderer.on('updateReady', () => {
   // When the user chooses to restart the app, send an event back to the main process.
   ipcRenderer.send('restartApp');
 });
+
+
+  window.onload = function() {
+
+    prefs = ipcRenderer.sendSync('prefs:getPrefs') || {};
+
+    // Get the checkbox element
+    const checkbox = document.getElementById('myCheckbox');
+  
+    // Add an event listener for the 'change' event
+    checkbox.addEventListener('change', function() {
+      // This function will be called whenever the checkbox is clicked
+  
+      // Check if the checkbox is checked
+      if (this.checked) {
+        // The checkbox is checked
+        // Switch to 8 transducer scan
+        // console.error('Checkbox is checked');
+        ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':8});
+      } else {
+        // The checkbox is not checked
+        // Switch to 4 transducer scan
+        ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':4});
+        // console.error('Checkbox is not checked');
+      }
+    });
+  };

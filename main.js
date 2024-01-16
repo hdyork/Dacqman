@@ -425,6 +425,16 @@ ipcMain.on('prefs:get', (e, key) => {
   e.returnValue = settingsStorage.get(key);
 });
 
+// console.error("test error");
+ipcMain.on('prefs:getXducerNumber', (e, xdN) => {
+  // console.error("listener test: " + xdN)
+  // console.error(`prefs:getXducerNumber returning ${settingsStorage.get('xducerNumber')}`);
+  e.returnValue = settingsStorage.set(xdN);
+});
+
+
+
+
 
 
 
