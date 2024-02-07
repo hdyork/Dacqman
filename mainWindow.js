@@ -2218,10 +2218,14 @@ ipcRenderer.on('updateReady', () => {
         // Switch to 8 transducer scan
         // console.error('Checkbox is checked');
         ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':8});
+        YourFace.RefreshFormatRefinement();
+        
+
       } else {
         // The checkbox is not checked
         // Switch to 4 transducer scan
         ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':4});
+        YourFace.RefreshFormatRefinement();
         // console.error('Checkbox is not checked');
       }
     });
