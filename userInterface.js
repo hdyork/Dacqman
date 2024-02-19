@@ -4,7 +4,7 @@
 // TODO move entire construction of the section here? Or to template?
 // TODO create object and pass parent div?
 
-const { controlPortClose } = require('./sprenderer.js');
+const { controlPortClose} = require('./sprenderer.js');
 
 
 const captDataEmitter = require('./capture-data.js').CaptDataEmitter; // For subscribing to events
@@ -318,6 +318,7 @@ class UserInterface {
       //e1.find('.right-align.col.s2').removeClass('s2').addClass('s6');
       //e1.find('.left-align.col.s1').removeClass('s1').addClass('s4');
       visibleInputs.detach().appendTo(newRow);
+      // console.error("test:");
     }
   } // End of: RefreshFormatRefinement
 
@@ -436,9 +437,13 @@ DirectorySelectClick = (event, jsonStart) => {
     $('#capture_ui_current_filename').removeClass("hide");
   }
 
-  // var d = $('#capture_ui_directory_select').find("input").val();
+  var d = $('#capture_ui_directory_select').find("input").val();
 
-  // controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d );
+  if (typeof controlPortSendData === 'function') {
+    controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d);
+  } else {
+    console.error('controlPortSendData is not a function');
+  }
 
   // console.error("jsonButtonTest, DirectorySelectClick: command: " + JSON.stringify(jsonStart.command) + " returnDataTo: " + JSON.stringify(jsonStart.returnDataTo) + " jsonStart: " + JSON.stringify(jsonStart) + " d: " + JSON.stringify(d));
 
@@ -500,7 +505,7 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
                 // the command is implemented in sprenderer
                 controlPortSendData(jb.command, jb.returnDataTo, jb, d );
-                controlPortSendData(btnCaptureStartJbBtnLogic.command, btnCaptureStartJbBtnLogic.returnDataTo, btnCaptureStartJbBtnLogic, d, null);
+                // controlPortSendData(btnCaptureStartJbBtnLogic.command, btnCaptureStartJbBtnLogic.returnDataTo, btnCaptureStartJbBtnLogic, d, null);
 
               }
               return whatToDoNowJson;
@@ -514,21 +519,23 @@ addButtonLogicFromJson = ( jsonButtons ) => {
             // });
           }
 
-          if ( jb.mapToButtonId === 'btnCaptureStart' ) {
-            $('#btnCaptureStop').removeClass("disabled");
-            $('#btnCaptureToFileStart').removeClass("disabled");
-            $('#btnCaptureStart').addClass("disabled");
-            $('#structureIdInfo').prop('disabled', true);
+          // if ( jb.mapToButtonId === 'btnCaptureStart' ) {
+          //   $('#btnCaptureStop').removeClass("disabled");
+          //   $('#btnCaptureToFileStart').removeClass("disabled");
+          //   $('#btnCaptureStart').addClass("disabled");
+          //   $('#structureIdInfo').prop('disabled', true);
 
-            console.log("addButtonLogicFromJSON: Start live waveform view");
+          //   console.log("addButtonLogicFromJSON: Start live waveform view");
 
 
-            // Then send the command
-            var d = $('#capture_ui_directory_select').find("input").val();
+          //   // Then send the command
+          //   var d = $('#capture_ui_directory_select').find("input").val();
 
-            // the command is implemented in sprenderer
-            controlPortSendData(jb.command, jb.returnDataTo, jb, d, null);
-          }
+          //   controlPortSendData(btnCaptureStopJb.command, btnCaptureStopJb.returnDataTo, btnCaptureStopJb, d, null);
+
+          //   // the command is implemented in sprenderer
+          //   controlPortSendData(jb.command, jb.returnDataTo, jb, d, null);
+          // }
 
           if ( jb.mapToButtonId === 'btnCaptureToFileStart' ) {
             $('#btnCaptureStop').removeClass("disabled");
@@ -540,6 +547,9 @@ addButtonLogicFromJson = ( jsonButtons ) => {
 
             // Then send the command
             var d = $('#capture_ui_directory_select').find("input").val();
+
+            controlPortSendData(btnCaptureStopJb.command, btnCaptureStopJb.returnDataTo, btnCaptureStopJb, d, null);
+
 
             // the command is implemented in sprenderer
             controlPortSendData(btnCaptureStartJbBtnLogic.command, btnCaptureStartJbBtnLogic.returnDataTo, btnCaptureStartJbBtnLogic, d, true);
@@ -608,6 +618,7 @@ UserInterface.Ready = () => {
 
 
 UISetupMultipaneCharts = ( nChans ) => {
+  // console.error("UISetupMultipaneCharts: nChans: " + nChans);
 
   //var nChans = GetNumberOfChannels() || 4; // Common usage to date is 4 as a reasonable default
   var classes = "col s12 m6 l3"; // This is/was the default for 8 channels
