@@ -2219,7 +2219,7 @@ ipcRenderer.on('updateReady', () => {
         // console.error('Checkbox is checked');
         ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':8});
         YourFace.RefreshFormatRefinement();
-        
+        UISetupMultipaneCharts(8);
 
       } else {
         // The checkbox is not checked
@@ -2227,6 +2227,8 @@ ipcRenderer.on('updateReady', () => {
         ipcRenderer.send('prefs:set', { 'key':'xducerNumber', 'value':4});
         YourFace.RefreshFormatRefinement();
         // console.error('Checkbox is not checked');
+        UISetupMultipaneCharts(4);
       }
+      console.error("numchans variable: " + numChans);
     });
   };

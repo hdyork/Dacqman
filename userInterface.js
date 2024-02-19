@@ -4,7 +4,7 @@
 // TODO move entire construction of the section here? Or to template?
 // TODO create object and pass parent div?
 
-const { controlPortClose, controlPortSendData } = require('./sprenderer.js');
+const { controlPortClose} = require('./sprenderer.js');
 
 
 const captDataEmitter = require('./capture-data.js').CaptDataEmitter; // For subscribing to events
@@ -318,7 +318,7 @@ class UserInterface {
       //e1.find('.right-align.col.s2').removeClass('s2').addClass('s6');
       //e1.find('.left-align.col.s1').removeClass('s1').addClass('s4');
       visibleInputs.detach().appendTo(newRow);
-      console.error("test:");
+      // console.error("test:");
     }
   } // End of: RefreshFormatRefinement
 
@@ -439,7 +439,11 @@ DirectorySelectClick = (event, jsonStart) => {
 
   var d = $('#capture_ui_directory_select').find("input").val();
 
-  controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d );
+  if (typeof controlPortSendData === 'function') {
+    controlPortSendData(jsonStart.command, jsonStart.returnDataTo, jsonStart, d);
+  } else {
+    console.error('controlPortSendData is not a function');
+  }
 
   // console.error("jsonButtonTest, DirectorySelectClick: command: " + JSON.stringify(jsonStart.command) + " returnDataTo: " + JSON.stringify(jsonStart.returnDataTo) + " jsonStart: " + JSON.stringify(jsonStart) + " d: " + JSON.stringify(d));
 
@@ -614,6 +618,7 @@ UserInterface.Ready = () => {
 
 
 UISetupMultipaneCharts = ( nChans ) => {
+  // console.error("UISetupMultipaneCharts: nChans: " + nChans);
 
   //var nChans = GetNumberOfChannels() || 4; // Common usage to date is 4 as a reasonable default
   var classes = "col s12 m6 l3"; // This is/was the default for 8 channels
