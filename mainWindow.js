@@ -630,6 +630,13 @@ function setPrefToInterfaceDataCaptureFocused(btn) {
   YourFace.SwitchInterface(ui, undefined, true);
 }
 
+function setPrefToInterfaceNewUI(btn) {
+  let ui = btn.getAttribute("value");
+  console.log("setting preference to use New User Interface");
+  ipcRenderer.send('prefs:set', { 'key':'interface', 'value':'newUI'});
+  YourFace.SwitchInterface(ui, undefined, true);
+}
+
 function setPrefToggleRangeSliderValues(btn) {
   // If includes Restore, then currently set to not restore the value and should be changed to restore it
   var yesRestoreRangeValues = true;

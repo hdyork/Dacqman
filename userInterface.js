@@ -54,7 +54,7 @@ class UserInterface {
     this._uiRegularDivs = uiRegularDivs;
     this._uiDataCaptureFocusedParentDiv = $(uiDataCaptureFocusedParentDiv);
     this._uiOldUIDiv = uiOldUIDiv;
-    this._uiNewUIDiv = $(uiNewUIDiv);
+    this._uiNewUIDiv = $(uiDataCaptureFocusedParentDiv);
 
     // Not constructed:
     this._captureDataFileOutputDirectory = null;
@@ -173,8 +173,8 @@ class UserInterface {
 
 
   SwitchInterface ( uiInterface, uiInterfaceRefinement, shouldReload) {
-    $("#newUIButton").hide();
-    $("#interfaceOptions").hide();
+    $("#newUIButton").show();
+    $("#interfaceOptions").show();
     $("#activeSerialPortStuff").hide();
     $("#singleWaveformChartAccordion").hide();
     $("#divCardConsoleLike").hide();
@@ -261,22 +261,42 @@ class UserInterface {
         break;
         case useNewUI:
           $(".sidebar").removeClass("hide");
-            this._uiDataCaptureFocusedParentDiv.addClass("hide");
-            this._uiDataCaptureFocusedParentDiv.empty();
-            this._uiRegularDivs.map(function(d){$(d).addClass("hide")});
-            $("#divCardConsoleLike").hide();
-            $("#serialPortSelectionAccordion").hide();
-            $("#activeSerialPortStuff").hide();
-            $("#expandable-footer").show(); // show the footer
-            $("#footerToggle").show(); // show the footer toggle button
-            this._currentUi = useRegular;
-            this._currentUiRefinement = uiInterfaceRefinement;
-            if ( this._uiNewUIDiv.children("div").length < 1 ) {
+          $("#serialPortGoButton").addClass("red");
+          $("#btnDataPortStatus").removeClass('hide blue-grey').addClass('green'); // TODO-TBD Used to have the pulse class set, removed for UI overlays TODO could make this conditional
+          $("#btnListeningForData").removeClass('hide disabled').addClass('pulse');
+          $("#active_ports_ui_status_indicators").removeClass('hide');
+          $("#active_ports_ui_buttons").removeClass('hide');
+          $("#btnSilenceIndicators").removeClass('disabled');
+          $("#btnControlPortStatus").removeClass("green").addClass('blue-grey');
+          $("#controlPortOpenBtn").prop('disabled', false);
+          $("#controlPortCloseBtn").prop('disabled', true);
+          // $('#myCheckbox').hide();
+          // $('label[for="myCheckbox"]').hide();
+          this._currentUi = useDataCaptureFocused;
+          this._currentUiRefinement = uiInterfaceRefinement;
+          if ( this._uiDataCaptureFocusedParentDiv.children("div").length < 1 ) {
               var json = this.buttonsJson;
               // 2nd param is callback function on completion
-              this._uiNewUIParentDiv.load(uiNewUIHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
+              this._uiDataCaptureFocusedParentDiv.load(uiDataCaptureFocusedHtmlSnippetFilepath, this.afterHtmlLoadedCallback(json, btnCaptureStartJb));
           }
-          this._uiNewUIParentDiv.removeClass("hide");
+          this._uiDataCaptureFocusedParentDiv.removeClass("hide");
+          //this._uiRegularDivs.map(function(d){$(d).collapsible("close")});
+  
+          //$("#serialPortSelectionAccordion").hide();
+  
+          // HOOKALERT02
+          // Breaking protocol for just direct selection and manipulation in this mode
+          // if ( uiInterfaceRefinement && uiInterfaceRefinement == uiInterfaceRefinementSimple ) {
+          //   $('#activeSerialPortStuff').addClass("hide");
+          //   $('#singleWaveformChartAccordion').addClass("hide");
+          //   var e1 = $('#divCustomControlVariableInputs');
+          //   var newParent = $('#activeControlPort');
+          //   newParent.find(".card-content").addClass("hide");
+          //   e1.detach().appendTo(newParent);
+          //   e1.find(".onlyAppliesToSingleChannelDaq").addClass("hide");
+          //   e1.find(".range-field").removeClass("s6").addClass("s4");
+          // }
+          this.RefreshFormatRefinement();
           break;
 
 

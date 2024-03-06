@@ -232,7 +232,6 @@
 
       <!-- OPTION? Place into card or section, etc.-->
       <div id="active_ports_ui_indicators" class="row">
-
           <div id="active_ports_ui_buttons" class="hide col s4">
               <!--Controls<br>-->
               <button id="btnDataPortStatus" class="btn-small blue hide" onclick="btnDataPortClick(this)" title="Click to Close/Open Data Streaming Port">
@@ -250,7 +249,7 @@
               <button id="btnSilenceIndicators" class="btn-small blue lighten-4 disabled right" onclick="silenceIndicators(this)">Silence Flashers</button>
           </div>
 
-      </div>
+      </div> 
 
 
 
@@ -484,6 +483,7 @@
           </li><!-- collapsible li -->
       </ul><!-- collapsible ul -->
       <!-- .......................................... -->
+      <!--  -->
       <!--
     ***********************************************
       CARD - Multipane-Chart
@@ -509,10 +509,10 @@
                                               <img class="mute-unmute" src="./assets/icon-unmuted-audio-50-wh.png" alt="Audio (Unmuted)">
                                           </span>
                                           <input type="checkbox" id="myCheckbox" name="myCheckbox" title="Check this box to switch to 8 sensor scan">
-                                          <label for="myCheckbox">Toggle 8 Sensor Scan</label>
-                                          <div id="multiWfsWindowPopout" class="right" style="cursor: pointer;">
+                                           <label for="myCheckbox">Toggle 8 Sensor Scan</label>
+                                          <!-- <div id="multiWfsWindowPopout" class="right" style="cursor: pointer;">
                                               POPOUT
-                                          </div>
+                                          </div> -->
                                       </span>
                                   </span>
                                   <div id="divMultichart" class="flex-container"></div>
@@ -639,6 +639,35 @@
         <i class="material-icons sidebar-icon-settings">refresh</i>
       </span>
     </a>
+
+    <!--  <input type="checkbox" id="myCheckbox" name="myCheckbox" title="Check this box to switch to 8 sensor scan">
+    <label for="myCheckbox">Toggle 8 Sensor Scan</label>-->
+
+    <div id="multiWfsWindowPopout" class="right" style="cursor: pointer;">
+     POPOUT
+    </div>
+
+    <div id="active_ports_ui_indicators" class="row">
+        <!--
+          <div id="active_ports_ui_buttons" class="hide col s4">
+              <!--Controls<br>-->
+              <button id="btnDataPortStatus" class="btn-small blue hide" onclick="btnDataPortClick(this)" title="Click to Close/Open Data Streaming Port">
+                  Data Port
+              </button>
+              <button id="btnControlPortStatus" class="btn-small blue hide" onclick="btnControlPortClick(this)" title="Click to Expand">
+                  Control Port<i class="material-icons">chevron_right</i>
+              </button>
+          </div>
+
+          <div id="active_ports_ui_status_indicators" class="hide col s8">
+              <!--Status<br>-->
+              <button id="btnListeningForData" class="btn-small blue lighten-4 disabled right">Listening for Data</button>
+              <button id="btnBufferOverflowing" class="btn-small lighten-2 disabled right">Buffer Overflowing</button>
+              <button id="btnSilenceIndicators" class="btn-small blue lighten-4 disabled right" onclick="silenceIndicators(this)">Silence Flashers</button>
+          </div>
+
+      </div> 
+
   </div>
 
   

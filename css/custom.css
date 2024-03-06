@@ -699,6 +699,47 @@ path {
   color: #6c5ce7; /* Changes the icon color on hover */
 }
 
+#myCheckbox {
+  position: relative;
+  z-index: 9999;
+  display: none;
+  /* padding-left: 20px; */
+}
+
+label[for="myCheckbox"] {
+  color: black;
+  position: relative;
+  cursor: pointer;
+  padding-left: 20px;
+  margin-left: 50px;
+}
+
+label[for="myCheckbox"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border: 1px solid black;
+  background: gray;
+}
+
+label[for="myCheckbox"]::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 8px;
+  height: 8px;
+  background: black;
+  display: none;
+}
+
+#myCheckbox:checked + label::after {
+  display: block;
+}
+
 #footer-container {
   position: fixed;
   bottom: 0;
@@ -801,7 +842,7 @@ main {
 #serialPortSelectionAccordion {
   display: none;
 }
-
+/* 
 #myCheckbox {
   position: relative;
   left: 40px;
@@ -838,5 +879,5 @@ label[for="myCheckbox"]::after {
 
 #myCheckbox:checked + label::after {
   display: block;
-}
+} */
 /* End: Chart */
