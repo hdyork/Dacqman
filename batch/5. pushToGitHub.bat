@@ -12,7 +12,7 @@ git commit -m "%commitMessage%"
 
 echo.
 echo Pushing changes to the master branch...
-git push -u origin master
+git push -u origin HEAD
 
 echo.
 set /P runExtraCommand="Deploy changes to github repo? (y/n): "
