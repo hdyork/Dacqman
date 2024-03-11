@@ -77,6 +77,16 @@ Seems to still rebuild/install ok on darwin and win32.
 
 ### Revisions
 
+- **0.0.25**  
+  - Live data scan lag issue fixed and reimplemented
+  - Fixed issue preventing dacqman from switching between 4 and 8 sensor scan
+  - Fixed issue causing data buffer to continue to fill after data scan has ended
+    
+- **0.0.24**
+  -   Implemented 8 sensor scan feature, toggle checkbox in datachart accordion to swap between 4 and 8 sensor scan
+  -   Switched from svg data renderer to canvas for increased stability and efficiency
+  -   Temporarilly removed live waveform scan due to lag issues
+    
 - **0.0.23**
   - Reverted to start and stop buttons for data capture (Same as it used to look pre v22)
   - Added live waveform feature to directory select button
