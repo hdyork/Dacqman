@@ -238,9 +238,24 @@ samples.
 (Basically: nvm, node 12.18.3, atom ide)
 2. Install the FTDI D2xx driver (maybe - see below regarding drivers -
   HIGHLIGHT: don't install the D2xxHelper.kext or D2xxHelper package at all as shown in the FTDI installation video - that component is not needed for our purposes) [Only do this step if you plan on using your pc to connect to any of the hardware].
-4. `git clone` this repo
-5. Open batch folder in repo directory and run the first three batch files in the order of thier numbering to install all dependencies.
+4. `git clone` this repo (or download the zip and extract it)
+5. Open batch folder in repo directory run the two batch files in the initialSetup folder, these only need to be run the first time you install dacqman on a new computer.
+6.Next, run the first three batch files in the order of their numbering, make sure to follow any prompts the batch files give you, after running these dacqman should be installed and ready to push/pull changes to a new branch in the repo.
 6. Run the fourth batch file '4. DacqMan Application.bat' to run unpacked applcation.
+7. To commit and push changes to repo, run batch file '5. pushToGitHub.bat' and follow the prompts.
+8. To deploy new release to repo, run batch file '6. deployToGitHub.bat' and follow the prompts.
+
+### In Development Mode (From VSCode)
+1. Install the development environment items as noted below.
+(Basically: nvm, node 12.18.3, atom ide)
+2. Install the FTDI D2xx driver (maybe - see below regarding drivers -
+  HIGHLIGHT: don't install the D2xxHelper.kext or D2xxHelper package at all as shown in the FTDI installation video - that component is not needed for our purposes) [Only do this step if you plan on using your pc to connect to any of the hardware].
+3. Hold Ctrl + Shift + P to open the command palette and type "Git: Clone" and select the option to clone from a URL, then paste the URL of this repository and press enter. (https://github.com/hdyork/Dacqman.git)
+4. Navigate to batch folder in repo directory and run the two batch files in the initialSetup folder, these only need to be run the first time you install dacqman on a new computer.
+5. Open command pallete and enter "git: create branch", this will be your current working branch.
+6. Open command pallete and enter "Tasks: Run Task", then enter npm, then enter "npm: install".
+7. To run Dacqman, enter the same commands as step 6, except run "npm: start" instead of "npm: install".
+8. Changes can then be committed and pushed to the current working branch using the source control tab on the left side of the window, or by using the command pallete to execute the "git: commit" and "git:pull" commands.
 
 ### In Development Mode (From Command line)
 
