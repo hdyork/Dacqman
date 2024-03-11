@@ -11,7 +11,7 @@ set /P commitMessage="Enter a commit message: "
 git commit -m "%commitMessage%"
 
 echo.
-echo Pushing changes to the master branch...
+echo Pushing changes to checkout branch...
 git push -u origin HEAD
 
 echo.
