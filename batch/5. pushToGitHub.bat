@@ -15,16 +15,5 @@ echo Pushing changes to checkout branch...
 git push -u origin HEAD
 
 echo.
-set /P runExtraCommand="Deploy changes to github repo? (y/n): "
-if /I "%runExtraCommand%" EQU "y" (
-    echo Running deploy-packed-win...
-    npm run deploy-packed-win
-) else (
-    echo Exiting...
-    pause
-    exit
-)
-
-echo.
 pause
 exit
